@@ -19,29 +19,25 @@
   "options_page": "src/options_custom/index.html",
   "browser_action": {
     "default_icon": "icons/icon19.png",
-    "default_title": "browser action demo",
-    "default_popup": "src/browser_action/browser_action.html"
+    "default_title": "Prod: Browser Productivity Tool",
+    "default_popup": "src/browser_action/main_window.html"
   },
   "permissions": [
     "chrome://favicon/",
     "contentSettings",
+    "tabs",
+    "<all_urls>",
     "idle"
   ],
   "content_scripts": [
     {
       "matches": [
-        "https://www.google.com/*"
-      ],
-      "css": [
-        "src/inject/inject.css"
-      ]
-    },
-    {
-      "matches": [
-        "https://www.google.com/*"
+        "<all_urls>",
+        "http://*/*",
+        "https://*/*"
       ],
       "js": [
-        "src/inject/inject.js"
+        "src/content/content.js"
       ]
     }
   ]
