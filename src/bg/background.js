@@ -6,6 +6,8 @@
 
 var currTab;
 
+var History = {};
+
 var styles = true;
 var images = true;
 var scripts = true;
@@ -16,6 +18,46 @@ chrome.extension.onMessage.addListener(
   	chrome.pageAction.show(sender.tab.id);
     sendResponse();
   });
+
+function Update(t, tabId, url) {
+  
+  if (!url) {
+    return;
+  }
+  var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
+  domain = '*://'+domain+'/*';
+  if (tabId in History) {
+    if (domain == History[tabId][0][1]) {
+      return;
+    }
+  } else {
+    History[tabId] = [];
+  }
+  History[tabId].unshift([t, domain]);
+
+  chrome.browserAction.setPopup({ 'tabId': tabId, 'popup': "popup.html#tabId=" + tabId});
+}
+
+function HandleUpdate(tabId, changeInfo, tab) {
+  Update(new Date(), tabId, changeInfo.url);
+}
+
+function HandleRemove(tabId, removeInfo) {
+  delete History[tabId];
+}
+
+function HandleReplace(addedTabId, removedTabId) {
+  var t = new Date();
+  delete History[removedTabId];
+  chrome.tabs.get(addedTabId, function(tab) {
+    Update(t, addedTabId, tab.url);
+  });
+}
+
+
+chrome.tabs.onUpdated.addListener(HandleUpdate);
+chrome.tabs.onRemoved.addListener(HandleRemove);
+chrome.tabs.onReplaced.addListener(HandleReplace);
 
 function reloadCurrentTab() {  
   chrome.tabs.reload();
