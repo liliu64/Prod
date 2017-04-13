@@ -35,7 +35,6 @@ function Update(t, tabId, url) {
   }
   History[tabId].unshift([t, domain]);
 
-  chrome.browserAction.setPopup({ 'tabId': tabId, 'popup': "popup.html#tabId=" + tabId});
 }
 
 function HandleUpdate(tabId, changeInfo, tab) {
@@ -114,6 +113,7 @@ function enableStyles(){
 }
 
 function toggleScripts(){
+  window.open("src/browser_action/popup.html");
   if(scripts) disableScripts();
   else       enableScripts();
   scripts = !scripts;
