@@ -6,7 +6,7 @@
 
 var currTab;
 
-var History = {"*://google.com/*": [0, new Date()]};
+var History = {"*://google.com/*": [0, new Date(),0]};
 
 var styles = true;
 var images = true;
@@ -31,9 +31,8 @@ function Update(date, tabId, url) {
 	    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
 	    History[domain][1] = date;
 	  } else {
-	    History[domain] = [0,date];
+	    History[domain] = [0,date,tabId];
 	  }
-	  // History[domain] = [0, date];
 	} else {
 		date = new Date();
 		var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
@@ -52,10 +51,11 @@ function HandleUpdate(tabId, changeInfo, tab) {
 }
 
 function HandleRemove(tabId, removeInfo) {
-  	
-  	chrome.tabs.get(tabId, function(tab) {
-    	Update("", tabId, tab.url);
-  	});
+  	var url = "";
+  	for (domain in History) {
+  		if (History[domain][2] == tabId) url = History[domain][2];
+  	}
+  	Update("", tabId, url);
 }
 
 function HandleReplace(addedTabId, removedTabId) {
@@ -124,11 +124,14 @@ function enableStyles(){
   });
 }
 
-function toggleScripts(){
+function popup(){
   window.open("popup.html");
-  // if(scripts) disableScripts();
-  // else       enableScripts();
-  // scripts = !scripts;
+}
+
+function toggleScripts(){
+  if(scripts) disableScripts();
+  else       enableScripts();
+  scripts = !scripts;
 }
 
 function toggleImages(){
@@ -147,4 +150,5 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('toggleJS').onclick = toggleScripts;
     document.getElementById('toggleIMG').onclick = toggleImages;
     document.getElementById('toggleStyles').onclick = toggleStyles;
+    document.getElementById('timeData').onclick = popup;
 }); 
