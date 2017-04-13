@@ -6,7 +6,7 @@
 
 var currTab;
 
-var History = {};
+var History = {"*://google.com/*": [0, new Date()]};
 
 var styles = true;
 var images = true;
@@ -19,21 +19,31 @@ chrome.extension.onMessage.addListener(
     sendResponse();
   });
 
-function Update(t, tabId, url) {
+function Update(date, tabId, url) {
   
-  if (!url) {
-    return;
-  }
-  var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
-  domain = '*://'+domain+'/*';
-  if (tabId in History) {
-    if (domain == History[tabId][0][1]) {
-      return;
+    if (!url) {
+    	return;
     }
-  } else {
-    History[tabId] = [];
-  }
-  History[tabId].unshift([t, domain]);
+  	if (date != "") {
+	  var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
+	  domain = '*://'+domain+'/*';
+	  if (domain in History) {
+	    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
+	    History[domain][1] = date;
+	  } else {
+	    History[domain] = [0,date];
+	  }
+	  // History[domain] = [0, date];
+	} else {
+		date = new Date();
+		var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
+		domain = '*://'+domain+'/*';
+	    if (domain in History) {
+		    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
+		    History[domain][1] = "";
+		}
+	}
+
 
 }
 
@@ -42,12 +52,14 @@ function HandleUpdate(tabId, changeInfo, tab) {
 }
 
 function HandleRemove(tabId, removeInfo) {
-  delete History[tabId];
+  	
+  	chrome.tabs.get(tabId, function(tab) {
+    	Update("", tabId, tab.url);
+  	});
 }
 
 function HandleReplace(addedTabId, removedTabId) {
   var t = new Date();
-  delete History[removedTabId];
   chrome.tabs.get(addedTabId, function(tab) {
     Update(t, addedTabId, tab.url);
   });
@@ -113,10 +125,10 @@ function enableStyles(){
 }
 
 function toggleScripts(){
-  window.open("src/browser_action/popup.html");
-  if(scripts) disableScripts();
-  else       enableScripts();
-  scripts = !scripts;
+  window.open("popup.html");
+  // if(scripts) disableScripts();
+  // else       enableScripts();
+  // scripts = !scripts;
 }
 
 function toggleImages(){
