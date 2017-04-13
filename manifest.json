@@ -20,7 +20,7 @@
   "browser_action": {
     "default_icon": "icons/icon19.png",
     "default_title": "Prod: Browser Productivity Tool",
-    "default_popup": "src/browser_action/main_window.html"
+    "default_popup": "src/browser_action/popup.html"
   },
   "permissions": [
     "chrome://favicon/",
