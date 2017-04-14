@@ -89,8 +89,13 @@ function toggleStyles(){
   styles = !styles;
 }
 
+function openAnalytics(){
+  chrome.tabs.create({url: chrome.extension.getURL('/src/browser_action/analysis.html')});
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('toggleJS').onclick = toggleScripts;
     document.getElementById('toggleIMG').onclick = toggleImages;
     document.getElementById('toggleStyles').onclick = toggleStyles;
+    document.getElementById('openAnalytics').onclick = openAnalytics;
 }); 
