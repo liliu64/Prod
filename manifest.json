@@ -27,7 +27,7 @@
     "chrome://favicon/",
     "contentSettings",
     "idle",
-    "storage,
+    "storage",
     "tabs",
     "<all_urls>"
   ],
