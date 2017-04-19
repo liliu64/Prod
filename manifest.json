@@ -13,11 +13,12 @@
   "default_locale": "en",
   "background": {
     "scripts": [
+      "src/browser_action/common.js",
       "src/bg/background.js"
     ],
     "persistent": true
   },
-  "options_page": "src/options_custom/index.html",
+  "options_page": "src/options_custom/options.html",
   "browser_action": {
     "default_icon": "icons/icon19.png",
     "default_title": "Prod: Browser Productivity Tool",
@@ -26,9 +27,10 @@
   "permissions": [
     "chrome://favicon/",
     "contentSettings",
+    "idle",
+    "storage",
     "tabs",
-    "<all_urls>",
-    "idle"
+    "<all_urls>"
   ],
   "content_scripts": [
     {
