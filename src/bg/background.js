@@ -6,6 +6,7 @@
 
 var currTab;
 
+
 var History = {"*://google.com/*": [0, new Date(),0]};
 
 var styles = true;
@@ -18,6 +19,14 @@ chrome.extension.onMessage.addListener(
   	chrome.pageAction.show(sender.tab.id);
     sendResponse();
   });
+
+function getData() {
+	var data = {};
+	for (key in History) {
+		data[key] = History[key][0];
+	}
+	return data;
+}
 
 function Update(date, tabId, url) {
   
