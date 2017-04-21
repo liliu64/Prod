@@ -30,7 +30,9 @@
     "idle",
     "storage",
     "tabs",
-    "<all_urls>"
+    "<all_urls>",
+    "idle",
+    "storage"
   ],
   "content_scripts": [
     {
@@ -41,7 +43,13 @@
       ],
       "js": [
         "src/content/content.js"
+      ],
+      "css": [
+        "css/prod.css"
       ]
     }
+  ],
+  "web_accessible_resources": [
+    "img/ProdLogo.png"
   ]
 }
