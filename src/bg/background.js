@@ -184,3 +184,4 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('timeData').onclick = popup;
     document.getElementById('openAnalytics').onclick = openAnalytics;
     document.getElementById('triggerWarning').onclick = triggerWarning;
+});
