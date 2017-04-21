@@ -6,6 +6,7 @@
 
 var currTab;
 
+
 var History = {"*://google.com/*": [0, new Date(),0]};
 
 var styles = true;
