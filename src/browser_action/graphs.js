@@ -27,26 +27,11 @@ var outerArc = d3.svg.arc()
 	.innerRadius(radius * 0.9)
 	.outerRadius(radius * 0.9);
 
-var sites = [
-	"Gmail",
-	"Facebook",
-	"Blackboard",
-	"Youtube",
-	"Buzzfeed",
-	"Github",
-	"Amazon",
-	"Netflix"
-];
-
-var timeSpent = []
-timeSpent["Gmail"] = 52;
-timeSpent["Facebook"] = 119;
-timeSpent["Blackboard"] = 13;
-timeSpent["Youtube"] = 46;
-timeSpent["Buzzfeed"] = 31;
-timeSpent["Github"] = 17;
-timeSpent["Amazon"] = 58;
-timeSpent["Netflix"] = 192;
+var siteData = getData();
+var sites = [];
+for (url in siteData) {
+	sites.push(url);
+}
 
 svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
@@ -60,7 +45,7 @@ var color = d3.scale.ordinal()
 function loadData (){
 	var labels = color.domain();
 	return labels.map(function(label){
-		return { label: label, value: timeSpent[label]}
+		return { label: label, value: siteData[label]}
 	});
 }
 
