@@ -1,4 +1,5 @@
 var logoURL = chrome.runtime.getURL("../../img/ProdLogo.png");
+var optionsURL = chrome.runtime.getURL("src/options_custom/options.html");
 
 var strings = {
   titles: {
@@ -7,7 +8,7 @@ var strings = {
     styles:  "No More Pretty :(",
     scripts: "Bye Bye Scripts" 
   },
-  body: "You're close to your <span id='prod-time'></span> hours/week <span id='prod-type'></span> \
+  body: "You're close to your <span id='prod-time'></span>/week <span id='prod-type'></span> \
          quota on <span id='prod-url'></span>. You can update this policy at your Prod Control Panel."
 };
 
@@ -16,8 +17,18 @@ var overlayContents = "<div class = 'overlay-head'> \
                           <img class = 'prod-logo' src=" + logoURL +"> \
                        </div>\
                        <p id='prod-message'>text</p>\
-                       <button class = 'btn-overlay' id='dismiss'>Dismiss</button>\ \
-                       <button class = 'btn-overlay' id='options'>Prod Control Panel</button>";
+                       <button class = 'btn-overlay' id='dismiss'>Dismiss</button>\
+                       <button class = 'btn-overlay' id='options'> \
+                       Prod Control Panel</button>";
+                       
+function removeOverlay() {
+  document.getElementById("prod-alert").remove();
+}
+
+function openOptions(){
+  window.open(optionsURL, '_blank');
+  removeOverlay();
+}
 
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
     if (msg.command === 'modify_styles') {
@@ -41,5 +52,7 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
       document.getElementById("prod-time").innerText = msg.time;
       document.getElementById("prod-type").innerHTML = msg.setting;
       document.getElementById("prod-url").innerHTML = msg.url;
+      document.getElementById("dismiss").onclick = removeOverlay;
+      document.getElementById("options").onclick = openOptions;
     }
 });

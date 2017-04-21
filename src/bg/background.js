@@ -173,7 +173,7 @@ function triggerOverlay(type, url, time){
 function triggerWarning(){
   chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
         var domain = tabs[0].url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
-        triggerOverlay('warning', domain, '9');
+        triggerOverlay('warning', domain, '9 hours');
   });
 }
 

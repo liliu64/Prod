@@ -50,6 +50,7 @@
     }
   ],
   "web_accessible_resources": [
-    "img/ProdLogo.png"
+    "img/ProdLogo.png",
+    "src/options_custom/options.html"
   ]
 }
