@@ -20,6 +20,14 @@ chrome.extension.onMessage.addListener(
     sendResponse();
   });
 
+function getData() {
+	var data = {};
+	for (key in History) {
+		data[key] = History[key][0];
+	}
+	return data;
+}
+
 function Update(date, tabId, url) {
   
     if (!url) {
