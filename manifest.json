@@ -27,7 +27,8 @@
     "contentSettings",
     "tabs",
     "<all_urls>",
-    "idle"
+    "idle",
+    "storage"
   ],
   "content_scripts": [
     {
@@ -38,7 +39,13 @@
       ],
       "js": [
         "src/content/content.js"
+      ],
+      "css": [
+        "css/prod.css"
       ]
     }
+  ],
+  "web_accessible_resources": [
+    "img/ProdLogo.png"
   ]
 }
