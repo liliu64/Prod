@@ -1,19 +1,16 @@
 // window.localStorage.clear();
-// chrome.storage.local.set({items:items});
-
-//Set 
-// window.localStorage.setItem(url1, JSON.stringify(val1));
 
 $(document).ready(function() {
 	// Initialize table
-	$('#example').DataTable( {
-		data: getdata(),
+	$('#example').dataTable( {
+		// data: getdata(),
 		columns: [
 		{ data: 'url' },
 		{ data: 'alarm' },
 		{ data: 'etc' }
 		]
 	} );
+	requestTableUpdate();
 
  	//Add row
 	$('#addrow').click(addRow);
@@ -24,29 +21,40 @@ $(document).ready(function() {
 	} );
 
 	// $('#button').click( function () {
- //        alert( table.rows('.selected').data().length +' row(s) selected' );
- //    } );
+	// 	alert( table.rows('.selected').data().length +' row(s) selected' );
+	// 	} );
 
 	// Remove selected rows
 	$('#removerow').click(deleteRow);
 
 } );
 
-// Returns data in format [ {url, alarm, etc], ... ]
-function getdata() {
-	var dataSet = [];
-	for (var key in localStorage)
-		dataSet.push((JSON.parse(localStorage[key])));
-	return dataSet;
+function requestTableUpdate() {
+	// var dataSet = [];
+	
+	// for (var key in localStorage) {
+	// 	dataSet.push((JSON.parse(localStorage[key])));
+	// }
+	$('#loadingSpinner').css('visibility', 'visible');
+	chrome.storage.sync.get(null, function(data) {
+		// console.log(data);
+		var dataSet = [];
+		for (url in data) {
+			dataSet.push(data[url]);
+		}
+		updateTable(dataSet);
+	} );
+
+	// return dataSet
 }
 
-function redrawTable() {
+// data should be an array of objects
+function updateTable(data) {
 	$('#example').dataTable().fnClearTable();
-	var data = getdata();
-	if (data != null && data.length != null && data.length > 0)
+
+	if (data != null && data.length > 0)
 		$('#example').dataTable().fnAddData(data);
-	else 
-		console.log("redrawTable error");
+	$('#loadingSpinner').css('visibility', 'hidden');
 }
 
 function addRow() {
@@ -60,25 +68,35 @@ function addRow() {
 		"alarm": newalarm,
 		"etc": newetc
 	};
-	// Insert form values into localStorage
-	window.localStorage.setItem(newurl, JSON.stringify(newentry));
+	var objRow = {};
+	objRow[newurl] = newentry;
 
-	// $('#example').dataTable().fnAddData( newentry );
+	// Insert form values into localStorage
+	// window.localStorage.setItem(newurl, JSON.stringify(newentry));
+	chrome.storage.sync.set( objRow );
+
+	// Change addmsg in html
+	var addmsg = "New URL added. [URL: " + newurl + ", Alarm: " + newalarm + 
+		", Etc: " + newetc + "]";
+	$('#addmsg').html(addmsg);
+	$('#addmsg').css('visibility', 'visible');
+	// setTimeout(fade_out, 10000);
 
 	// Update table
-	redrawTable();
+	requestTableUpdate();
 }
 
+
 function deleteRow() {
-	// $('#example').DataTable().row('.selected').remove().draw( false );
 	var todelete = [];
 	todelete = $('#example').DataTable().rows('.selected').data();
 	var length = todelete.length;
 
 	for (i = 0; i < length; i++) {
 		var deleteurl = todelete[i]["url"];
-		localStorage.removeItem(deleteurl);
+		// localStorage.removeItem(deleteurl);
+		chrome.storage.sync.remove(deleteurl);
 	}
 
-	redrawTable();
+	requestTableUpdate();
 }

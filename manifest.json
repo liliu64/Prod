@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "manifest_version": 2,
   "description": "Stay Productive",
-  "homepage_url": "http://extensionizr.com",
+  "homepage_url": "http://www.cs.princeton.edu/~jmorone/prod",
+  "content_security_policy": "script-src 'self' https://d3js.org; object-src 'self'",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -17,7 +18,7 @@
     ],
     "persistent": true
   },
-  "options_page": "src/options_custom/index.html",
+  "options_page": "src/options_custom/options.html",
   "browser_action": {
     "default_icon": "icons/icon19.png",
     "default_title": "Prod: Browser Productivity Tool",
@@ -26,9 +27,12 @@
   "permissions": [
     "chrome://favicon/",
     "contentSettings",
+    "idle",
+    "storage",
     "tabs",
     "<all_urls>",
-    "idle"
+    "idle",
+    "storage"
   ],
   "content_scripts": [
     {
@@ -39,7 +43,14 @@
       ],
       "js": [
         "src/content/content.js"
+      ],
+      "css": [
+        "css/prod.css"
       ]
     }
+  ],
+  "web_accessible_resources": [
+    "img/ProdLogo.png",
+    "src/options_custom/options.html"
   ]
 }

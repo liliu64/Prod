@@ -2,15 +2,27 @@
 <html>
 <head><title>My Test Extension Options</title></head>
 
+<!-- Important -->
 <script type="text/javascript" src="js/jquery-3.2.0.js"></script>
-<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="js/options.js"></script>
+<!-- <script type="text/javascript" src="sampleopt.js"></script> -->
+<link rel="stylesheet" type="text/css" href="css/options.css" />
+
+<!-- Table -->
+
+<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css" />
+
+<!-- Not Used -->
 <!-- <link rel="stylesheet" type="text/css" href="bootstrap.min.css" /> -->
 
 
-
 <body>
+
+<div class = "loading" id = "loadingSpinner" style="visibility:hidden">
+        <img src="HexClock.gif"/>
+        <div id = "loading_text">Loading Resources...</div>
+</div>
 
 
 <form>
@@ -22,6 +34,8 @@
   <input type="text" name="Etc" id="form-etc" size="30"> <br>
   <input type="button" value="Add new site" id="addrow" />
 </form>
+<br>
+<div id="addmsg" style="visibility:hidden">Hi</div>
 
 <br>
 <input type="button" value="Remove selected site(s)" id="removerow" />
@@ -49,3 +63,4 @@
 
 </body>
 </html>
+
