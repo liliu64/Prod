@@ -18,10 +18,8 @@ $(document).ready(function() {
 	updateTable();
 
  	//Add row
-	// $('#addrow').click(addRow);
-	// $("button[id='addrow']").click(function() {
-	// 	console.log("hi");
-	// });
+	$('#addrow').click(addRow);
+	// $('#addrow').on('click', addRow);
  	// Select rows
 	$('#example tbody').on( 'click', 'tr', function () {
 		$(this).toggleClass('selected');
@@ -91,7 +89,6 @@ function addRow() {
 	var newurl = $('#form-url').val();
 	var newalarm = Number($('#form-alarm').val());
 	var newetc = $('#form-etc').val();
-	// console.log(newurl);
 
 	//Check url from form
 	if (!newurl) {

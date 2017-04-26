@@ -50,7 +50,7 @@
 							<div id = "loading_text">Loading Resources...</div>
 						</div>
 
-						<form class="form">
+						<form>
 							<!-- URL:<br>
 							<input type="text" name="URL" id="form-url" size="30" > <br>
 							Alarm:<br>
@@ -59,30 +59,29 @@
 							<input type="text" name="Etc" id="form-etc" size="15"> <br> -->
 							<div class="form-group row">
 								<label for="URL">URL</label>
-								<input type="text" class="form-control" id="formURLInput" placeholder="google.com">
+								<input type="text" class="form-control" id="form-url" placeholder="google.com">
 							</div>
 							<div class="form-group row">
-								<label for="Alarm Duration">URL</label>
-								<input type="text" class="form-control" id="formURLInput" placeholder="3">
+								<label for="Alarm Duration">Alarm Duration</label>
+								<input type="text" class="form-control" id="form-alarm" placeholder="3">
 							</div>
 							<div class="form-group row">
 								<label for="URL">Alarm Type</label>
-								<input type="text" class="form-control" id="formURLInput" placeholder="JS / CSS / Media">
+								<input type="text" class="form-control" id="form-etc" placeholder="JS / CSS / Media">
 							</div>
+							<input type="button" class="btn btn-primary" value="Add new alarm" id="addrow" />
 
+<!-- 							<br>
+							<br> -->
+							<div id="addmsg" style="visibility:hidden; display: block; float:right;">Hi</div>
 
-							<button type="submit" class="btn btn-primary" id="addrow">Add new rule</button>
 							<br>
-							<div id="addmsg" style="visibility:hidden">Hi</div>
-
 							<br>
-							<input type="button" value="Remove selected row(s)" id="removerow" />
+
+							<input type="button" class="btn btn-danger" value="Remove selected row(s)" id="removerow" />
 						</form>
 
-
-						<br>
-						<hr>	
-						<br>
+						<hr>
 
 						<table id="example" class="display" cellspacing="0" width="100%">
 							<thead>
@@ -107,7 +106,7 @@
 
 					<!-- Etc -->
 					<div class="bhoechie-tab-content">	
-						<h2 style="margin-top: 0;color:#55518a">Coming Soon</h2>
+						<h2>Coming Soon</h2>
 					</div>
 
 				</div>
