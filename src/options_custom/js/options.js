@@ -6,7 +6,6 @@
 
 // Initialize datatable by requesting data from chrome.storage
 $(document).ready(function() {
-
 	// Initialize table
 	$('#example').dataTable( {
 		// data: getdata(),
@@ -20,17 +19,24 @@ $(document).ready(function() {
 
  	//Add row
 	$('#addrow').click(addRow);
+	// $('#addrow').on('click', addRow);
  	// Select rows
 	$('#example tbody').on( 'click', 'tr', function () {
 		$(this).toggleClass('selected');
 	} );
 	// Remove selected rows
 	$('#removerow').click(deleteRow);
+	// Tabs panel
+	$("div.bhoechie-tab-menu>div.list-group>a").click(function(e) {
+        e.preventDefault();
+        $(this).siblings('a.active').removeClass("active");
+        $(this).addClass("active");
+        var index = $(this).index();
+        $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
+        $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
+    });
 
 } );
-
-
-
 
 /* ----------------
  * Helper functions. 
@@ -110,7 +116,6 @@ function addRow() {
     	}
   		newurl = "https://" + newurl + "/";
   		var domain = newurl.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
-
 
     	// Prepare domain to match with History index
     	var domain2 = '*://www.'+domain+'/*'

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>My Test Extension Options</title>
+	<title>Options Page</title>
+	<meta charset="utf-8">
 
 	<!-- Important -->
 	<script type="text/javascript" src="js/jquery-3.2.0.js"></script>
@@ -14,66 +15,101 @@
 
 	<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
 	<!-- <script type="text/javascript" src="js/jquery-ui.js"></script> -->
+
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css" />
 
-	<!-- Not Used -->
-	<!-- <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" /> -->
+	
 
 
 </head>
 
 <body>
 
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-5 col-md-5 col-sm-8 col-xs-9 bhoechie-tab-container">
 
-<div id="tabs">
-<!-- 	<ul>
-		<li><a href="#page1">Page 1</a></li>
-		<li><a href="#page2">Page 2</a></li>
-	</ul> -->
+				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 bhoechie-tab-menu">
+					<div class="list-group">
+						<a href="#" class="list-group-item active text-center">
+							<h4 class="glyphicon glyphicon-plane"></h4><br/>Alarms
+						</a>
+						<a href="#" class="list-group-item text-center">
+							<h4 class="glyphicon glyphicon-road"></h4><br/>Etc
+						</a>
+					</div>
+				</div>
 
-	<div id="page1">
-		<div class = "loading" id = "loadingSpinner" style="visibility:hidden">
-			<img src="HexClock.gif"/>
-			<div id = "loading_text">Loading Resources...</div>
+				<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 bhoechie-tab">
+					<!-- URL Alarms -->
+					<div class="bhoechie-tab-content active">
+						
+						<div class = "loading" id = "loadingSpinner" style="visibility:hidden">
+							<img src="HexClock.gif"/>
+							<div id = "loading_text">Loading Resources...</div>
+						</div>
+
+						<form>
+							<!-- URL:<br>
+							<input type="text" name="URL" id="form-url" size="30" > <br>
+							Alarm:<br>
+							<input type="text" name="Alarm" id="form-alarm" size="15"> <br>
+							Etc:<br>
+							<input type="text" name="Etc" id="form-etc" size="15"> <br> -->
+							<div class="form-group row">
+								<label for="URL">URL</label>
+								<input type="text" class="form-control" id="form-url" placeholder="google.com">
+							</div>
+							<div class="form-group row">
+								<label for="Alarm Duration">Alarm Duration</label>
+								<input type="text" class="form-control" id="form-alarm" placeholder="3">
+							</div>
+							<div class="form-group row">
+								<label for="URL">Alarm Type</label>
+								<input type="text" class="form-control" id="form-etc" placeholder="JS / CSS / Media">
+							</div>
+							<input type="button" class="btn btn-primary" value="Add new alarm" id="addrow" />
+
+							<div id="addmsg" style="visibility:hidden; display: block; float:right;">Hi</div>
+
+							<br>
+							<br>
+
+							<input type="button" class="btn btn-danger" value="Remove selected row(s)" id="removerow" />
+						</form>
+
+						<hr>
+
+						<table id="example" class="display" cellspacing="0" width="100%">
+							<thead>
+								<tr>
+									<th>URL</th>
+									<th>Alarm Duration</th>
+									<th>Alarm Type</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>URL</th>
+									<th>Alarm Duration</th>
+									<th>Alarm Type</th>
+								</tr>
+							</tfoot>
+						</table>
+
+
+					</div>
+
+
+					<!-- Etc -->
+					<div class="bhoechie-tab-content">	
+						<h2>Coming Soon</h2>
+					</div>
+
+				</div>
+			</div>
 		</div>
-
-		<form>
-			URL:<br>
-			<input type="text" name="URL" id="form-url" size="30" > <br>
-			Alarm:<br>
-			<input type="text" name="Alarm" id="form-alarm" size="30"> <br>
-			Etc:<br>
-			<input type="text" name="Etc" id="form-etc" size="30"> <br>
-			<input type="button" value="Add new site" id="addrow" />
-		</form>
-		<br>
-		<div id="addmsg" style="visibility:hidden">Hi</div>
-
-		<br>
-		<input type="button" value="Remove selected site(s)" id="removerow" />
-
-		<br>
-		<hr>	
-		<br>
-
-		<table id="example" class="display" cellspacing="0" width="100%">
-			<thead>
-				<tr>
-					<th>URL</th>
-					<th>Alarm</th>
-					<th>Etc</th>
-				</tr>
-			</thead>
-			<tfoot>
-				<tr>
-					<th>URL</th>
-					<th>Alarm</th>
-					<th>Etc</th>
-				</tr>
-			</tfoot>
-		</table>
-
-
 	</div>
 
 	<!-- <div id="page2">
