@@ -6,11 +6,6 @@
 
 // Initialize datatable by requesting data from chrome.storage
 $(document).ready(function() {
-	// Table formatting
- 	// $( "#tabs" ).tabs();
- 	// $( "#tabs" ).addClass('ui-tabs-vertical ui-helper-clearfix');
-	// $( "#tabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
-	// $( "#tabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 
 	// Initialize table
 	$('#example').dataTable( {
@@ -31,24 +26,6 @@ $(document).ready(function() {
 	} );
 	// Remove selected rows
 	$('#removerow').click(deleteRow);
-
-	// var tabsFn = (function() {
-
-	// 	function init() {
-	// 		setHeight();
-	// 	}
-
-	// 	function setHeight() {
-	// 		var $tabPane = $('.tab-pane'),
-	// 		tabsHeight = $('.nav-tabs').height();
-
-	// 		$tabPane.css({
-	// 			height: tabsHeight
-	// 		});
-	// 	}
-
-	// 	$(init);
-	// })();
 
 } );
 
@@ -136,8 +113,8 @@ function addRow() {
 
 
     	// Prepare domain to match with History index
-    	domain = '*://'+domain+'/*';
     	var domain2 = '*://www.'+domain+'/*'
+    	domain = '*://'+domain+'/*';
     	
     	// Add to History
     	if (domain in History) { //if this exists in History
