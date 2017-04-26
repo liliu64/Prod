@@ -51,7 +51,7 @@ function Update(date, tabId, url) {
 		    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
 		    History[domain][1] = date.toJSON();
 		  } else {
-		    History[domain] = [0,date.toJSON(),tabId, 0, ""];
+		    History[domain] = [0,date.toJSON(),0, ""];
 		  }
 		} else {
 			date = new Date();
