@@ -37,7 +37,7 @@ for (url in siteData) {
 	totalTime = totalTime + siteData[url];
 }
 for (url in siteData) {
-	if siteData[url] > (0.05 * totalTime) {
+	if (siteData[url] > (0.05 * totalTime)) {
 		sites.push(url);
 	}
 }
