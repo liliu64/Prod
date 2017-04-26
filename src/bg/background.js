@@ -7,7 +7,7 @@
 var currTab;
 
 
-var History = {"*://google.com/*": [0, new Date(),0]};
+var History = {};
 
 var styles = true;
 var images = true;
@@ -21,45 +21,54 @@ chrome.extension.onMessage.addListener(
   });
 
 function getData() {
-	var data = {};
-	for (key in History) {
-		data[key] = History[key][0];
-	}
-	return data;
+	chrome.storage.sync.get('History', function(data) {
+		var output = {};
+		for (key in data) {
+			output[key] = data[key][0];
+		}
+		return output;
+	} );
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> refs/remotes/origin/master
 function Update(date, tabId, url) {
   
-    if (!url) {
-    	return;
-    }
-  	if (date != "") {
-	  var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
-	  domain = '*://'+domain+'/*';
-	  if (domain in History) {
-	    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
-	    History[domain][1] = date;
-	  } else {
-	    History[domain] = [0,date,tabId];
-	  }
-	} else {
-		date = new Date();
-		var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
-		domain = '*://'+domain+'/*';
-	    if (domain in History) {
+  	chrome.storage.sync.get('History', function(data) {
+  		if (data['History'] == null) {
+  			History = {"*://google.com/*": [0, "", 0]};
+  		} else {
+  			History = data['History'];
+  		}
+  		
+	    if (!url) {
+	    	return;
+	    }
+	  	if (date != "") {
+		  var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
+		  domain = '*://'+domain+'/*';
+		  if (domain in History) {
 		    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
-		    History[domain][1] = "";
+		    History[domain][1] = date.toJSON();
+		  } else {
+		    History[domain] = [0,date.toJSON(),tabId];
+		  }
+		} else {
+			date = new Date();
+			var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
+			domain = '*://'+domain+'/*';
+		    if (domain in History) {
+			    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
+			    History[domain][1] = "";
+			}
 		}
-	}
-
-
+		chrome.storage.sync.set({'History': History});
+	} );
+	
 }
 
 function HandleUpdate(tabId, changeInfo, tab) {
-  Update(new Date(), tabId, changeInfo.url);
+	
+	Update(new Date(), tabId, changeInfo.url);
+	
 }
 
 function HandleRemove(tabId, removeInfo) {
