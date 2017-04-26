@@ -22,14 +22,11 @@ chrome.extension.onMessage.addListener(
   });
 
 function getData() {
-	chrome.storage.sync.get('History', function(data) {
-		var input = data['History'];
-		var output = {};
-		for (key in input) {
-			output[key] = input[key][0];
-		}
-		return output;
-	} );
+	var output = {};
+	for (key in History) {
+		output[key] = History[key][0];
+	}
+	return output;
 }
 
 function Update(date, tabId, url) {
