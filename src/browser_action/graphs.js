@@ -27,7 +27,8 @@ var outerArc = d3.svg.arc()
 	.innerRadius(radius * 0.9)
 	.outerRadius(radius * 0.9);
 
-var siteData = getData();
+var bgPage = chrome.extension.getBackgroundPage();
+var siteData = bgPage.getData();
 var sites = [];
 for (url in siteData) {
 	sites.push(url);
