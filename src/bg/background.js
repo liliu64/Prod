@@ -7,7 +7,8 @@
 var currTab;
 
 
-var History = {"*://google.com/*": [0, new Date(),0]};
+var History = {};
+var lastActive = "";
 
 var styles = true;
 var images = true;
@@ -21,63 +22,103 @@ chrome.extension.onMessage.addListener(
   });
 
 function getData() {
-	var data = {};
-	for (key in History) {
-		data[key] = History[key][0];
-	}
-	return data;
+	chrome.storage.sync.get('History', function(data) {
+		var input = data['History']
+		var output = {};
+		for (key in input) {
+			output[key] = input[key][0];
+		}
+		return output;
+	} );
 }
 
 function Update(date, tabId, url) {
   
-    if (!url) {
-    	return;
-    }
-  	if (date != "") {
-	  var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
-	  domain = '*://'+domain+'/*';
-	  if (domain in History) {
-	    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
-	    History[domain][1] = date;
-	  } else {
-	    History[domain] = [0,date,tabId];
-	  }
-	} else {
-		date = new Date();
-		var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
-		domain = '*://'+domain+'/*';
-	    if (domain in History) {
+  	chrome.storage.sync.get('History', function(data) {
+  		if (data['History'] == null) {
+  			History = {"*://google.com/*": [0, "", 0, ""]};
+  		} else {
+  			History = data['History'];
+  		}
+  		
+	    if (!url) {
+	    	return;
+	    }
+	  	if (date != "") {
+		  var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
+		  domain = '*://'+domain+'/*';
+		  if (domain in History) {
 		    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
-		    History[domain][1] = "";
+		    History[domain][1] = date.toJSON();
+		  } else {
+		    History[domain] = [0,date.toJSON(),tabId, 0, ""];
+		  }
+		} else {
+			date = new Date();
+			var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
+			domain = '*://'+domain+'/*';
+		    if (domain in History) {
+			    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
+			    History[domain][1] = "";
+			}
 		}
-	}
+		chrome.storage.sync.set({'History': History});
+	} );
+	
+}
 
+function Activate(url) {
 
+	chrome.storage.sync.get('History', function(data) {
+		if (data['History'] == null) {
+  			History = {"*://google.com/*": [0, "", 0, ""]};
+  		} else {
+  			History = data['History'];
+  		}
+  		
+	    if (!url) {
+	    	return;
+	    }
+	    var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
+		domain = '*://'+domain+'/*';
+		var date = new Date();
+		if (lastActive in History) {
+			History[lastActive][0] += date.getTime() - new Date(History[lastActive][1]).getTime();
+			History[lastActive][1] = "";
+		}
+		lastActive = domain;
+	    if (domain in History) {
+			History[domain][1] = date.toJSON();
+	    } else {
+	    	History[domain] = [0,date.toJSON(),0, ""];
+	    }
+	    // var website = domain.substring(4,domain.length - 2);
+
+	    // if (History[domain][0] > 10000) {
+	    // 	triggerOverlay('warning',website, '10 seconds');
+	    // }
+	    chrome.storage.sync.set({'History': History});
+	} );
 }
 
 function HandleUpdate(tabId, changeInfo, tab) {
-  Update(new Date(), tabId, changeInfo.url);
+	
+	Update(new Date(), tabId, changeInfo.url);
+	
 }
 
-function HandleRemove(tabId, removeInfo) {
-  	var url = "";
-  	for (domain in History) {
-  		if (History[domain][2] == tabId) url = History[domain][2];
-  	}
-  	Update("", tabId, url);
-}
-
-function HandleReplace(addedTabId, removedTabId) {
-  var t = new Date();
-  chrome.tabs.get(addedTabId, function(tab) {
-    Update(t, addedTabId, tab.url);
-  });
+function HandleActivated(activeInfo) {
+	var tabId = activeInfo.tabId;
+	var url;
+	chrome.tabs.get(tabId, function(tab) {
+		url = tab.url;
+		Activate(url);
+	});
 }
 
 
 chrome.tabs.onUpdated.addListener(HandleUpdate);
-chrome.tabs.onRemoved.addListener(HandleRemove);
-chrome.tabs.onReplaced.addListener(HandleReplace);
+chrome.tabs.onActivated.addListener(HandleActivated);
 
 function reloadCurrentTab() {  
   chrome.tabs.reload();
