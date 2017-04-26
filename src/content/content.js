@@ -1,5 +1,5 @@
 var logoURL = chrome.runtime.getURL("../../img/ProdLogo.png");
-var optionsURL = chrome.runtime.getURL("src/options_custom/options.html");
+var optionsURL = chrome.runtime.getURL("src/options/options.html");
 
 var strings = {
   titles: {
