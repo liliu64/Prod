@@ -6,12 +6,6 @@
 
 // Initialize datatable by requesting data from chrome.storage
 $(document).ready(function() {
-	// Table formatting
- 	// $( "#tabs" ).tabs();
- 	// $( "#tabs" ).addClass('ui-tabs-vertical ui-helper-clearfix');
-	// $( "#tabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
-	// $( "#tabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
-
 	// Initialize table
 	$('#example').dataTable( {
 		// data: getdata(),
@@ -24,36 +18,27 @@ $(document).ready(function() {
 	updateTable();
 
  	//Add row
-	$('#addrow').click(addRow);
+	// $('#addrow').click(addRow);
+	// $("button[id='addrow']").click(function() {
+	// 	console.log("hi");
+	// });
  	// Select rows
 	$('#example tbody').on( 'click', 'tr', function () {
 		$(this).toggleClass('selected');
 	} );
 	// Remove selected rows
 	$('#removerow').click(deleteRow);
-
-	// var tabsFn = (function() {
-
-	// 	function init() {
-	// 		setHeight();
-	// 	}
-
-	// 	function setHeight() {
-	// 		var $tabPane = $('.tab-pane'),
-	// 		tabsHeight = $('.nav-tabs').height();
-
-	// 		$tabPane.css({
-	// 			height: tabsHeight
-	// 		});
-	// 	}
-
-	// 	$(init);
-	// })();
+	// Tabs panel
+	$("div.bhoechie-tab-menu>div.list-group>a").click(function(e) {
+        e.preventDefault();
+        $(this).siblings('a.active').removeClass("active");
+        $(this).addClass("active");
+        var index = $(this).index();
+        $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
+        $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
+    });
 
 } );
-
-
-
 
 /* ----------------
  * Helper functions. 
@@ -106,6 +91,7 @@ function addRow() {
 	var newurl = $('#form-url').val();
 	var newalarm = Number($('#form-alarm').val());
 	var newetc = $('#form-etc').val();
+	// console.log(newurl);
 
 	//Check url from form
 	if (!newurl) {
@@ -130,11 +116,19 @@ function addRow() {
   		// Parse url
   		newurl = "https://" + newurl + "/";
   		var domain = newurl.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
-    	domain = '*://'+domain+'/*';
+  		if (newurl.startsWith("www.")) {
+  			newurl = newurl.substring(4);
+    	}
 
+    	domain = '*://'+domain+'/*';
+    	var domain2 = '*://www.'+domain+'/*'
+    	
     	// Add to History
     	if (domain in History) { //if this exists in History
     		History[domain] = [History[domain][0], History[domain][1], newalarm, newetc];
+    	}
+    	else if (domain2 in History) {
+    		History[domain2] = [History[domain2][0], History[domain2][1], newalarm, newetc];
     	}
     	else { //if new rule
 			History[domain] = [0,"", newalarm, newetc];
