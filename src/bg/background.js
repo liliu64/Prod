@@ -92,6 +92,11 @@ function Activate(url) {
 	    } else {
 	    	History[domain] = [0,date.toJSON(),0, ""];
 	    }
+	    // var website = domain.substring(4,domain.length - 2);
+
+	    // if (History[domain][0] > 10000) {
+	    // 	triggerOverlay('warning',website, '10 seconds');
+	    // }
 	    chrome.storage.sync.set({'History': History});
 	} );
 }
