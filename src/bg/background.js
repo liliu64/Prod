@@ -36,7 +36,7 @@ function Update(date, tabId, url) {
   
   	chrome.storage.sync.get('History', function(data) {
   		if (data['History'] == null) {
-  			History = {"*://google.com/*": [0, "", 0, ""]};
+  			History = {"*://www.google.com/*": [0, "", 0, ""]};
   		} else {
   			History = data['History'];
   		}
@@ -71,7 +71,7 @@ function Activate(url) {
 
 	chrome.storage.sync.get('History', function(data) {
 		if (data['History'] == null) {
-  			History = {"*://google.com/*": [0, "", 0, ""]};
+  			History = {"*://www.google.com/*": [0, "", 0, ""]};
   		} else {
   			History = data['History'];
   		}
