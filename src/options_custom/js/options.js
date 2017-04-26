@@ -6,10 +6,6 @@
 
 // Initialize datatable by requesting data from chrome.storage
 $(document).ready(function() {
-<<<<<<< HEAD
-=======
-
->>>>>>> master
 	// Initialize table
 	$('#example').dataTable( {
 		// data: getdata(),
@@ -30,7 +26,6 @@ $(document).ready(function() {
 	} );
 	// Remove selected rows
 	$('#removerow').click(deleteRow);
-<<<<<<< HEAD
 	// Tabs panel
 	$("div.bhoechie-tab-menu>div.list-group>a").click(function(e) {
         e.preventDefault();
@@ -40,8 +35,6 @@ $(document).ready(function() {
         $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
         $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
     });
-=======
->>>>>>> master
 
 } );
 
