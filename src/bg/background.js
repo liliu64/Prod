@@ -23,7 +23,7 @@ chrome.extension.onMessage.addListener(
 
 function getData() {
 	chrome.storage.sync.get('History', function(data) {
-		var input = data['History']
+		var input = data['History'];
 		var output = {};
 		for (key in input) {
 			output[key] = input[key][0];
