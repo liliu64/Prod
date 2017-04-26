@@ -48,6 +48,7 @@ function Update(date, tabId, url) {
 		  if (domain in History) {
 		    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
 		    History[domain][1] = date.toJSON();
+		    History[domain][2] = tabId;
 		  } else {
 		    History[domain] = [0,date.toJSON(),tabId];
 		  }
@@ -58,6 +59,7 @@ function Update(date, tabId, url) {
 		    if (domain in History) {
 			    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
 			    History[domain][1] = "";
+			    History[domain][2] = 0;
 			}
 		}
 		chrome.storage.sync.set({'History': History});
