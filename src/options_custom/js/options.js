@@ -74,6 +74,10 @@ function updateTable() {
 		for (key in History) {
 			var entry = [];
 
+			// Only get urls with valid alarm rules
+			if (History[key][2] <= 0) {
+				continue;
+			}
 
 			// Clean up key
 			var cleankey = key.substring(4, key.length - 2)
@@ -108,13 +112,17 @@ function addRow() {
 		console.log("No URL found!"); //**** put red warning msg
 		return;
 	}
+	if (newalarm <= 0) {
+		console.log("invalid alarm rule");
+		return;
+	}
 
 	chrome.storage.sync.get('History', function(data) {
 		var History;
 
 		if (data['History'] == null) {
   			History = {};
-  			console.log("Setting default site");
+  			console.log("Empty History: created new history");
   		} else {
   			History = data['History'];
   		}
@@ -124,7 +132,13 @@ function addRow() {
   		var domain = newurl.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
     	domain = '*://'+domain+'/*';
 
-		History[domain] = [0,0, newalarm, newetc];
+    	// Add to History
+    	if (domain in History) { //if this exists in History
+    		History[domain] = [History[domain][0], History[domain][1], newalarm, newetc];
+    	}
+    	else { //if new rule
+			History[domain] = [0,"", newalarm, newetc];
+		}	
 
   		// Change addmsg in html
   		var addmsg = "New URL added. [URL: " + domain + ", AlarmRule: " + newalarm + 
@@ -145,6 +159,9 @@ function deleteRow() {
 	var length = todelete.length;
 
 	chrome.storage.sync.get('History', function(data) {
+		if (data['History'] == null)
+			console.log("Cannot delete: History is null");
+		
 		var History =  data['History'];
 
 		for (i = 0; i < length; i++) {
@@ -152,10 +169,12 @@ function deleteRow() {
 			var domain = todelete[i][0];
 			domain = '*://'+domain+'/*';
 			
-			delete History[domain];
+			if (domain in History)
+				delete History[domain];
+			else 
+				console.log("Cannot delete: domain not found in History");
 			
 		}
-		// console.log(History);
 
 		chrome.storage.sync.set({'History': History}, function() {
 			updateTable();
