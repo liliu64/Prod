@@ -27,10 +27,19 @@ var outerArc = d3.svg.arc()
 	.innerRadius(radius * 0.9)
 	.outerRadius(radius * 0.9);
 
-var siteData = getData();
-var sites = [];
+var bgPage = chrome.extension.getBackgroundPage();	// background.js
+var siteData = bgPage.getData();	// key = url, value = time
+var sites = [];	// site names to use
+
+// If site information is not long enough (5% of total time), do not include
+var totalTime = 0.0;
 for (url in siteData) {
-	sites.push(url);
+	totalTime = totalTime + siteData[url];
+}
+for (url in siteData) {
+	if (siteData[url] > (0.05 * totalTime)) {
+		sites.push(url);
+	}
 }
 
 svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
@@ -50,11 +59,6 @@ function loadData (){
 }
 
 change(loadData());
-
-d3.select(".reload")
-	.on("click", function(){
-		change(loadData());
-	});
 
 
 function change(data) {

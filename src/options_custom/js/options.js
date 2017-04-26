@@ -114,12 +114,13 @@ function addRow() {
   		}
   		
   		// Parse url
-  		newurl = "https://" + newurl + "/";
-  		var domain = newurl.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
   		if (newurl.startsWith("www.")) {
   			newurl = newurl.substring(4);
     	}
+  		newurl = "https://" + newurl + "/";
+  		var domain = newurl.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
 
+    	// Prepare domain to match with History index
     	domain = '*://'+domain+'/*';
     	var domain2 = '*://www.'+domain+'/*'
     	

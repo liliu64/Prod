@@ -22,21 +22,18 @@ chrome.extension.onMessage.addListener(
   });
 
 function getData() {
-	chrome.storage.sync.get('History', function(data) {
-		var input = data['History'];
-		var output = {};
-		for (key in input) {
-			output[key] = input[key][0];
-		}
-		return output;
-	} );
+	var output = {};
+	for (key in History) {
+		output[key] = History[key][0];
+	}
+	return output;
 }
 
 function Update(date, tabId, url) {
   
   	chrome.storage.sync.get('History', function(data) {
   		if (data['History'] == null) {
-  			History = {"*://google.com/*": [0, "", 0, ""]};
+  			History = {"*://www.google.com/*": [0, "", 0, ""]};
   		} else {
   			History = data['History'];
   		}
@@ -71,7 +68,7 @@ function Activate(url) {
 
 	chrome.storage.sync.get('History', function(data) {
 		if (data['History'] == null) {
-  			History = {"*://google.com/*": [0, "", 0, ""]};
+  			History = {"*://www.google.com/*": [0, "", 0, ""]};
   		} else {
   			History = data['History'];
   		}
