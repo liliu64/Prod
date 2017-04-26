@@ -34,7 +34,7 @@ function Update(date, tabId, url) {
   
   	chrome.storage.sync.get('History', function(data) {
   		if (data['History'] == null) {
-  			History = {"*://google.com/*": [0, "", 0]};
+  			History = {"*://google.com/*": [0, "", 0, 0, ""]};
   		} else {
   			History = data['History'];
   		}
@@ -50,7 +50,7 @@ function Update(date, tabId, url) {
 		    History[domain][1] = date.toJSON();
 		    History[domain][2] = tabId;
 		  } else {
-		    History[domain] = [0,date.toJSON(),tabId];
+		    History[domain] = [0,date.toJSON(),tabId, 0, ""];
 		  }
 		} else {
 			date = new Date();
