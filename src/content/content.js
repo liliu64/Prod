@@ -5,7 +5,7 @@ var strings = {
   titles: {
     warning: ["Maybe you should get back to work?",
               "Time to start being productive?",
-              "Oh noeesssss! Too much procrastination?",
+              "Oh nooeeessss! Too much procrastination?",
               "You've been warned..."],
     images:  ["Well, this is a bit more boring",
               "No more pics. No more gifs.",
