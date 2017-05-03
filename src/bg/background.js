@@ -1,8 +1,5 @@
-// if you checked "fancy-settings" in extensionizr.com, uncomment this lines
-
-// var settings = new Store("settings", {
-//     "sample_setting": "This is how you use Store.js to remember values"
-// });
+var analyticsURL   = chrome.runtime.getURL("/src/browser_action/analysis.html");
+var optionsURL = chrome.runtime.getURL("/src/options/options.html");
 
 var currTab;
 
@@ -219,16 +216,21 @@ function toggleStyles(){
   styles = !styles;
 }
 
+function openOptions(){
+  chrome.tabs.create({url: optionsURL});
+}
+
 function openAnalytics(){
-  chrome.tabs.create({url: chrome.extension.getURL('/src/browser_action/analysis.html')});
+  chrome.tabs.create({url: analyticsURL});
 }
   
-function triggerOverlay(type, url, time){
+function triggerOverlay(type, url, time, unit){
   chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
       chrome.tabs.sendMessage(tabs[0].id, {command: 'display_message', 
                             setting: type,
                             url: url,
-                            time: time}, 
+                            time: time,
+                            unit: unit}, 
       function(response) {
     });
   });
@@ -237,7 +239,7 @@ function triggerOverlay(type, url, time){
 function triggerWarning(){
   chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
         var domain = tabs[0].url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
-        triggerOverlay('warning', domain, '9 hours');
+        triggerOverlay('warning', domain, '9 hours', 'day');
   });
 }
 
@@ -247,5 +249,6 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('toggleStyles').onclick = toggleStyles;
     document.getElementById('timeData').onclick = popup;
     document.getElementById('openAnalytics').onclick = openAnalytics;
+    document.getElementById('openOptions').onclick = openOptions;
     document.getElementById('triggerWarning').onclick = triggerWarning;
 });
