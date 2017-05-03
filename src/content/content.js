@@ -21,7 +21,7 @@ var strings = {
               "Remember simpler times?"] 
   },
   body: "You have reached your <span id='prod-time'></span>/<span id='prod-unit'></span>\
-         <span id='prod-type'></span> on <span id='prod-url'></span>. \
+         <span id='prod-type'></span> limit on <span id='prod-url'></span>. \
          You can update this policy at your Prod Control Panel."
 };
 
