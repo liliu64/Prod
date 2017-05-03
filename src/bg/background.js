@@ -29,46 +29,47 @@ function getData() {
 	return output;
 }
 
-function Update(date, tabId, url) {
+// Old second handler, transfered all flow to Activate
+// function Update(date, tabId, url) {
   
-  	chrome.storage.sync.get('History', function(data) {
-  		if (data['History'] == null) {
-  			History = {"*://www.google.com/*": [0, "", 0, ""]};
-  		} else {
-  			History = data['History'];
-  		}
+//   	chrome.storage.sync.get('History', function(data) {
+//   		if (data['History'] == null) {
+//   			History = {"*://www.google.com/*": [0, "", [0], [""]]};
+//   		} else {
+//   			History = data['History'];
+//   		}
   		
-	    if (!url) {
-	    	return;
-	    }
-	  	if (date != "") {
-		  var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
-		  domain = '*://'+domain+'/*';
-		  if (domain in History) {
-		    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
-		    History[domain][1] = date.toJSON();
-		  } else {
-		    History[domain] = [0,date.toJSON(),0, ""];
-		  }
-		} else {
-			date = new Date();
-			var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
-			domain = '*://'+domain+'/*';
-		    if (domain in History) {
-			    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
-			    History[domain][1] = "";
-			}
-		}
-		chrome.storage.sync.set({'History': History});
-	} );
+// 	    if (!url) {
+// 	    	return;
+// 	    }
+// 	  	if (date != "") {
+// 		  var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
+// 		  domain = '*://'+domain+'/*';
+// 		  if (domain in History) {
+// 		    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
+// 		    History[domain][1] = date.toJSON();
+// 		  } else {
+// 		    History[domain] = [0,date.toJSON(),0, ""];
+// 		  }
+// 		} else {
+// 			date = new Date();
+// 			var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
+// 			domain = '*://'+domain+'/*';
+// 		    if (domain in History) {
+// 			    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
+// 			    History[domain][1] = "";
+// 			}
+// 		}
+// 		chrome.storage.sync.set({'History': History});
+// 	} );
 	
-}
+// }
 
 function Activate(url) {
 
 	chrome.storage.sync.get('History', function(data) {
 		if (data['History'] == null) {
-  			History = {"*://www.google.com/*": [0, "", 0, ""]};
+  			History = {"*://www.google.com/*": [0, "", [0], [""]]};
   		} else {
   			History = data['History'];
   		}
@@ -83,27 +84,49 @@ function Activate(url) {
 			History[lastActive][0] += date.getTime() - new Date(History[lastActive][1]).getTime();
 			History[lastActive][1] = "";
 		}
+
+		// bug catcher 
+		// for (key in History) {
+		// 	if (key[1] != "") {
+		// 		key[0] = date.getTime() - new Date(key[1]).getTime();
+		// 		key[1] = "";
+		// 	}
+		// }
+
+
 		lastActive = domain;
 	    if (domain in History) {
 			History[domain][1] = date.toJSON();
 	    } else {
-	    	History[domain] = [0,date.toJSON(),0, ""];
+	    	History[domain] = [0,date.toJSON(),[0], [""]];
 	    }
 
 	    var website = domain.substring(4,domain.length - 2);
 
-	    if (History[domain][2] > 0) {
-	    	if (History[domain][0] > 60000 * History[domain][2]) {
-		    	triggerOverlay(History[domain][3],website, History[domain][2].toString() + ' minutes');
-		    }
+	    
+	    for (var i = 0; i < History[domain][2].length; i++) {
+	    	var time = History[domain][2][i];
+	    	if (time > 0) {
+	    		//60000 ms per minute
+	    		if (History[domain][0] > 60000 * time) {
+		    		triggerOverlay(History[domain][3][i],website, time.toString() + ' minutes');
+		    	}
+	    	}
 	    }
+
+	    // Non array version of alarms
+	    // if (History[domain][2] > 0) {
+	    // 	if (History[domain][0] > 60000 * History[domain][2]) {
+		   //  	triggerOverlay(History[domain][3],website, History[domain][2].toString() + ' minutes');
+		   //  }
+	    // }
+
 	    chrome.storage.sync.set({'History': History});
 	} );
 }
 
 function HandleUpdate(tabId, changeInfo, tab) {
-	
-	Update(new Date(), tabId, changeInfo.url);
+	Activate(changeInfo.url);
 	
 }
 
