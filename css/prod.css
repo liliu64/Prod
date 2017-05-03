@@ -47,19 +47,27 @@ h1#prod-title {
   box-sizing: border-box;
 }
 
-button.btn-overlay {
+button.btn-prod.btn-overlay {
   width: 49.45%;
   height: 12%;
+  font-size: 2vw;
+  margin: 0;
+  padding: 1%;
+}
+
+button.btn-prod {
   background-color: #331A14;
   color: white;
-  margin: 0;
-  font-size: 2vw;
-  padding: 1%;
   box-sizing: border-box;
   border: 0;
   min-height: 0;
   text-align: center;
   line-height: 1;
+}
+
+button.btn-action {
+  font-size: 7.25vw;
+  width: 49.25%;
 }
 
 .prod-logo {
@@ -68,4 +76,24 @@ button.btn-overlay {
   right: 1%;
   top: 0;
   margin: 0;
+}
+
+.btn-dbg {
+  display: inline;
+  font-size: 3vw;
+}
+
+.prod-action {
+  width: 300px;
+  background-color: #002431;
+  color: white;
+  font-size: 4vw;
+  font-family: "Open Sans",Arial,"Lucida Grande",sans-serif;
+}
+
+h1.prod-logo-txt {
+  font-size: 12vw;
+  margin:    3%;
+  margin-left:    0;
+  margin-right:   0;
 }

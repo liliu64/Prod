@@ -18,7 +18,7 @@
     ],
     "persistent": true
   },
-  "options_page": "src/options_custom/options.html",
+  "options_page": "src/options/options.html",
   "browser_action": {
     "default_icon": "icons/icon19.png",
     "default_title": "Prod: Browser Productivity Tool",
@@ -50,6 +50,7 @@
     }
   ],
   "web_accessible_resources": [
-    "img/ProdLogo.png"
+    "img/ProdLogo.png",
+    "src/options/options.html"
   ]
 }

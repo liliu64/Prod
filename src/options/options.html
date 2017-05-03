@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Prod Control Panel</title>
+
+	<!-- Important -->
+	<script type="text/javascript" src="js/jquery-3.2.0.js"></script>
+	<script type="text/javascript" src="js/options.js"></script>
+	<!-- <script type="text/javascript" src="sampleopt.js"></script> -->
+	<link rel="stylesheet" type="text/css" href="css/options.css" />
+	<!-- <link rel="stylesheet" type="text/css" href="css/jquery-ui.css" /> -->
+
+	<!-- Table -->
+
+	<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+	<!-- <script type="text/javascript" src="js/jquery-ui.js"></script> -->
+	<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css" />
+
+	<!-- Not Used -->
+	<!-- <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" /> -->
+
+
+</head>
+
+<body>
+
+
+<div id="tabs">
+<!-- 	<ul>
+		<li><a href="#page1">Page 1</a></li>
+		<li><a href="#page2">Page 2</a></li>
+	</ul> -->
+
+	<div id="page1">
+		<div class = "loading" id = "loadingSpinner" style="visibility:hidden">
+			<img src="images/HexClock.gif"/>
+			<div id = "loading_text">Loading Resources...</div>
+		</div>
+
+		<form>
+			URL:<br>
+			<input type="text" name="URL" id="form-url" size="30" > <br>
+			Alarm:<br>
+			<input type="text" name="Alarm" id="form-alarm" size="30"> <br>
+			Etc:<br>
+			<input type="text" name="Etc" id="form-etc" size="30"> <br>
+			<input type="button" value="Add new site" id="addrow" />
+		</form>
+		<br>
+		<div id="addmsg" style="visibility:hidden">Hi</div>
+
+		<br>
+		<input type="button" value="Remove selected site(s)" id="removerow" />
+
+		<br>
+		<hr>	
+		<br>
+
+		<table id="example" class="display" cellspacing="0" width="100%">
+			<thead>
+				<tr>
+					<th>URL</th>
+					<th>Alarm</th>
+					<th>Etc</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr>
+					<th>URL</th>
+					<th>Alarm</th>
+					<th>Etc</th>
+				</tr>
+			</tfoot>
+		</table>
+
+
+	</div>
+
+	<!-- <div id="page2">
+		<h2>Page 2</h2>
+		<p>Hello, page2 here.</p>
+	</div> -->
+
+</div>
+
+</body>
+</html>
+

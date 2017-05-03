@@ -27,26 +27,20 @@ var outerArc = d3.svg.arc()
 	.innerRadius(radius * 0.9)
 	.outerRadius(radius * 0.9);
 
-var sites = [
-	"Gmail",
-	"Facebook",
-	"Blackboard",
-	"Youtube",
-	"Buzzfeed",
-	"Github",
-	"Amazon",
-	"Netflix"
-];
+var bgPage = chrome.extension.getBackgroundPage();	// background.js
+var siteData = bgPage.getData();	// key = url, value = time
+var sites = [];	// site names to use
 
-var timeSpent = []
-timeSpent["Gmail"] = 52;
-timeSpent["Facebook"] = 119;
-timeSpent["Blackboard"] = 13;
-timeSpent["Youtube"] = 46;
-timeSpent["Buzzfeed"] = 31;
-timeSpent["Github"] = 17;
-timeSpent["Amazon"] = 58;
-timeSpent["Netflix"] = 192;
+// If site information is not long enough (5% of total time), do not include
+var totalTime = 0.0;
+for (url in siteData) {
+	totalTime = totalTime + siteData[url];
+}
+for (url in siteData) {
+	if (siteData[url] > (0.05 * totalTime)) {
+		sites.push(url);
+	}
+}
 
 svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
@@ -60,16 +54,11 @@ var color = d3.scale.ordinal()
 function loadData (){
 	var labels = color.domain();
 	return labels.map(function(label){
-		return { label: label, value: timeSpent[label]}
+		return { label: label, value: siteData[label]}
 	});
 }
 
 change(loadData());
-
-d3.select(".reload")
-	.on("click", function(){
-		change(loadData());
-	});
 
 
 function change(data) {

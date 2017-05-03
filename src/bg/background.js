@@ -1,13 +1,11 @@
-// if you checked "fancy-settings" in extensionizr.com, uncomment this lines
-
-// var settings = new Store("settings", {
-//     "sample_setting": "This is how you use Store.js to remember values"
-// });
+var analyticsURL   = chrome.runtime.getURL("/src/browser_action/analysis.html");
+var optionsURL = chrome.runtime.getURL("/src/options/options.html");
 
 var currTab;
 
 
-var History = {"*://google.com/*": [0, new Date(),0]};
+var History = {};
+var lastActive = "";
 
 var styles = true;
 var images = true;
@@ -21,63 +19,126 @@ chrome.extension.onMessage.addListener(
   });
 
 function getData() {
-	var data = {};
+	var output = {};
 	for (key in History) {
-		data[key] = History[key][0];
+		output[key] = History[key][0];
 	}
-	return data;
+	return output;
 }
 
-function Update(date, tabId, url) {
+// Old second handler, transfered all flow to Activate
+// function Update(date, tabId, url) {
   
-    if (!url) {
-    	return;
-    }
-  	if (date != "") {
-	  var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
-	  domain = '*://'+domain+'/*';
-	  if (domain in History) {
-	    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
-	    History[domain][1] = date;
-	  } else {
-	    History[domain] = [0,date,tabId];
-	  }
-	} else {
-		date = new Date();
-		var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
+//   	chrome.storage.sync.get('History', function(data) {
+//   		if (data['History'] == null) {
+//   			History = {"*://www.google.com/*": [0, "", [0], [""]]};
+//   		} else {
+//   			History = data['History'];
+//   		}
+  		
+// 	    if (!url) {
+// 	    	return;
+// 	    }
+// 	  	if (date != "") {
+// 		  var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
+// 		  domain = '*://'+domain+'/*';
+// 		  if (domain in History) {
+// 		    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
+// 		    History[domain][1] = date.toJSON();
+// 		  } else {
+// 		    History[domain] = [0,date.toJSON(),0, ""];
+// 		  }
+// 		} else {
+// 			date = new Date();
+// 			var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
+// 			domain = '*://'+domain+'/*';
+// 		    if (domain in History) {
+// 			    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
+// 			    History[domain][1] = "";
+// 			}
+// 		}
+// 		chrome.storage.sync.set({'History': History});
+// 	} );
+	
+// }
+
+function Activate(url) {
+
+	chrome.storage.sync.get('History', function(data) {
+		if (data['History'] == null) {
+  			History = {"*://www.google.com/*": [0, "", [0], [""]]};
+  		} else {
+  			History = data['History'];
+  		}
+  		
+	    if (!url) {
+	    	return;
+	    }
+	    var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
 		domain = '*://'+domain+'/*';
-	    if (domain in History) {
-		    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
-		    History[domain][1] = "";
+		var date = new Date();
+		if (lastActive in History) {
+			History[lastActive][0] += date.getTime() - new Date(History[lastActive][1]).getTime();
+			History[lastActive][1] = "";
 		}
-	}
+
+		// bug catcher 
+		// for (key in History) {
+		// 	if (key[1] != "") {
+		// 		key[0] = date.getTime() - new Date(key[1]).getTime();
+		// 		key[1] = "";
+		// 	}
+		// }
 
 
+		lastActive = domain;
+	    if (domain in History) {
+			History[domain][1] = date.toJSON();
+	    } else {
+	    	History[domain] = [0,date.toJSON(),[0], [""]];
+	    }
+
+	    var website = domain.substring(4,domain.length - 2);
+
+	    
+	    for (var i = 0; i < History[domain][2].length; i++) {
+	    	var time = History[domain][2][i];
+	    	if (time > 0) {
+	    		//60000 ms per minute
+	    		if (History[domain][0] > 60000 * time) {
+		    		triggerOverlay(History[domain][3][i],website, time.toString() + ' minutes');
+		    	}
+	    	}
+	    }
+
+	    // Non array version of alarms
+	    // if (History[domain][2] > 0) {
+	    // 	if (History[domain][0] > 60000 * History[domain][2]) {
+		   //  	triggerOverlay(History[domain][3],website, History[domain][2].toString() + ' minutes');
+		   //  }
+	    // }
+
+	    chrome.storage.sync.set({'History': History});
+	} );
 }
 
 function HandleUpdate(tabId, changeInfo, tab) {
-  Update(new Date(), tabId, changeInfo.url);
+	Activate(changeInfo.url);
+	
 }
 
-function HandleRemove(tabId, removeInfo) {
-  	var url = "";
-  	for (domain in History) {
-  		if (History[domain][2] == tabId) url = History[domain][2];
-  	}
-  	Update("", tabId, url);
-}
-
-function HandleReplace(addedTabId, removedTabId) {
-  var t = new Date();
-  chrome.tabs.get(addedTabId, function(tab) {
-    Update(t, addedTabId, tab.url);
-  });
+function HandleActivated(activeInfo) {
+	var tabId = activeInfo.tabId;
+	var url;
+	chrome.tabs.get(tabId, function(tab) {
+		url = tab.url;
+		Activate(url);
+	});
 }
 
 
 chrome.tabs.onUpdated.addListener(HandleUpdate);
-chrome.tabs.onRemoved.addListener(HandleRemove);
-chrome.tabs.onReplaced.addListener(HandleReplace);
+chrome.tabs.onActivated.addListener(HandleActivated);
 
 function reloadCurrentTab() {  
   chrome.tabs.reload();
@@ -155,16 +216,21 @@ function toggleStyles(){
   styles = !styles;
 }
 
+function openOptions(){
+  chrome.tabs.create({url: optionsURL});
+}
+
 function openAnalytics(){
-  chrome.tabs.create({url: chrome.extension.getURL('/src/browser_action/analysis.html')});
+  chrome.tabs.create({url: analyticsURL});
 }
   
-function triggerOverlay(type, url, time){
+function triggerOverlay(type, url, time, unit){
   chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
       chrome.tabs.sendMessage(tabs[0].id, {command: 'display_message', 
                             setting: type,
                             url: url,
-                            time: time}, 
+                            time: time,
+                            unit: unit}, 
       function(response) {
     });
   });
@@ -173,7 +239,7 @@ function triggerOverlay(type, url, time){
 function triggerWarning(){
   chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
         var domain = tabs[0].url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
-        triggerOverlay('warning', domain, '9');
+        triggerOverlay('warning', domain, '9 hours', 'day');
   });
 }
 
@@ -183,5 +249,6 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('toggleStyles').onclick = toggleStyles;
     document.getElementById('timeData').onclick = popup;
     document.getElementById('openAnalytics').onclick = openAnalytics;
+    document.getElementById('openOptions').onclick = openOptions;
     document.getElementById('triggerWarning').onclick = triggerWarning;
 });

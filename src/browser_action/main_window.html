@@ -3,16 +3,20 @@
 <head>
     <title>Prod Main Menu</title>
     <script language='javascript' src='../bg/background.js'></script>
+    <link rel="stylesheet" href="../../css/prod.css">
 </head>
 
-<body>
-  <div id="mainPopup">
-  <h1>Prod</h1>
-  <button id="toggleJS">Toggle JS</button>
-  <button id="toggleIMG">Toggle Images</button>
-  <button id="toggleStyles">Toggle Styles</button>
-  <button id="timeData">Data Structure</button>
-  <button id="openAnalytics">Open Analytics</button>
-  <button id="triggerWarning">Trigger Warning</button>
+<body class="prod-action">
+  <h1 class = "prod-logo-txt">Prod</h1>
+  <img class = 'prod-logo' src="../../img/ProdLogo.png">
+  <button class = 'btn-prod btn-action' id="openOptions">Control Panel</button>
+  <button class = 'btn-prod btn-action' id="openAnalytics">View Analytics</button>
+  
+  <div class = "debug">
+    <button class = 'btn-dbg' id="toggleJS">Toggle JS</button>
+    <button class = 'btn-dbg' id="toggleIMG">Toggle Images</button>
+    <button class = 'btn-dbg' id="toggleStyles">Toggle Styles</button>
+    <button class = 'btn-dbg' id="timeData">Data Structure</button>
+    <button class = 'btn-dbg' id="triggerWarning">Trigger Warning</button>
   </div>
 </body>
