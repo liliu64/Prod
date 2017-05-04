@@ -66,7 +66,7 @@ function Activate(url) {
 
 	chrome.storage.sync.get('History', function(data) {
 		if (data['History'] == null) {
-  			History = {"*://www.google.com/*": [0, "", [0], [""]]};
+  			History = {"*://www.google.com/*": [0, "", [0], [""], [""]]};
   		} else {
   			History = data['History'];
   		}
@@ -95,7 +95,7 @@ function Activate(url) {
 	    if (domain in History) {
 			History[domain][1] = date.toJSON();
 	    } else {
-	    	History[domain] = [0,date.toJSON(),[0], [""]];
+	    	History[domain] = [0,date.toJSON(),[0], [""], [""]];
 	    }
 
 	    var website = domain.substring(4,domain.length - 2);
@@ -105,22 +105,23 @@ function Activate(url) {
 	    	var time = History[domain][2][i];
 	    	if (time > 0) {
 	    		//60000 ms per minute
-	    		if (History[domain][0] > 60 * 60 * 1000 * time) {
+	    		if (History[domain][0] > time) {
 		    		switch (History[domain][3][i]) {
+		    			var hours = time / (60 * 60 * 1000);
 	    				case "warning":
-	    					triggerOverlay(History[domain][3][i],website, time.toString() + ' hours', 'week');
+	    					triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
 	    					break;
 	    				case "image":
 	    					disableImages();
-	    					triggerOverlay(History[domain][3][i],website, time.toString() + ' hours', 'week');
+	    					triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
 	    					break;
 	    				case "scripts":
 	    					disableScripts();
-	    					triggerOverlay(History[domain][3][i],website, time.toString() + ' hours', 'week');
+	    					triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
 	    					break;
 	    				case "style":
 	    					disableStyles();
-	    					triggerOverlay(History[domain][3][i],website, time.toString() + ' hours', 'week');
+	    					triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
 	    					break;
 	    				default:
 	    					break;
