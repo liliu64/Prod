@@ -1,7 +1,7 @@
 .prod-overlay {
   z-index: 99999;
-  height: 50%;
-  width: 50%;
+  height: 22vw;
+  width: 45vw;
   background-color: #002431;
   color: white;
   position: fixed;
@@ -21,7 +21,7 @@ h1#prod-title {
   color: white;
   padding: 2%;
   margin: 0;
-  font-size: 3.3vw;
+  font-size: 3.2vw;
   margin: 0;
   font-weight: normal;
   line-height: normal;
@@ -30,9 +30,9 @@ h1#prod-title {
 
 #prod-message {
   padding: 2%;
-  padding-top: 5vw;
-  line-height: 2.4vw;
-  height: 69%;
+  padding-top: 5.5vw;
+  line-height: 2.35vw;
+  height: 62%;
   margin: 0;
   box-sizing: border-box;
   overflow: auto;
@@ -47,19 +47,27 @@ h1#prod-title {
   box-sizing: border-box;
 }
 
-button.btn-overlay {
-  width: 49.45%;
-  height: 12%;
+button.btn-prod.btn-overlay {
+  width: 49.4%;
+  height: 19%;
+  font-size: 2.2vw;
+  margin: 0;
+  padding: 1%;
+}
+
+button.btn-prod {
   background-color: #331A14;
   color: white;
-  margin: 0;
-  font-size: 2vw;
-  padding: 1%;
   box-sizing: border-box;
   border: 0;
   min-height: 0;
   text-align: center;
   line-height: 1;
+}
+
+button.btn-action {
+  font-size: 7.25vw;
+  width: 49.25%;
 }
 
 .prod-logo {
@@ -68,4 +76,24 @@ button.btn-overlay {
   right: 1%;
   top: 0;
   margin: 0;
+}
+
+.btn-dbg {
+  display: inline;
+  font-size: 3vw;
+}
+
+.prod-action {
+  width: 300px;
+  background-color: #002431;
+  color: white;
+  font-size: 4vw;
+  font-family: "Open Sans",Arial,"Lucida Grande",sans-serif;
+}
+
+h1.prod-logo-txt {
+  font-size: 12vw;
+  margin:    3%;
+  margin-left:    0;
+  margin-right:   0;
 }
