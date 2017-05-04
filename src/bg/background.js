@@ -83,12 +83,12 @@ function Activate(url) {
 		}
 
 		// bug catcher 
-		// for (key in History) {
-		// 	if (key[1] != "") {
-		// 		key[0] = date.getTime() - new Date(key[1]).getTime();
-		// 		key[1] = "";
-		// 	}
-		// }
+		for (key in History) {
+			if (key[1] != "") {
+				key[0] = date.getTime() - new Date(key[1]).getTime();
+				key[1] = "";
+			}
+		}
 
 
 		lastActive = domain;
@@ -105,8 +105,26 @@ function Activate(url) {
 	    	var time = History[domain][2][i];
 	    	if (time > 0) {
 	    		//60000 ms per minute
-	    		if (History[domain][0] > 60000 * time) {
-		    		triggerOverlay(History[domain][3][i],website, time.toString() + ' minutes');
+	    		if (History[domain][0] > 60 * 60 * 1000 * time) {
+		    		switch (History[domain][3][i]) {
+	    				case "warning":
+	    					triggerOverlay(History[domain][3][i],website, time.toString() + ' hours', 'week');
+	    					break;
+	    				case "image":
+	    					disableImages();
+	    					triggerOverlay(History[domain][3][i],website, time.toString() + ' hours', 'week');
+	    					break;
+	    				case "scripts":
+	    					disableScripts();
+	    					triggerOverlay(History[domain][3][i],website, time.toString() + ' hours', 'week');
+	    					break;
+	    				case "style":
+	    					disableStyles();
+	    					triggerOverlay(History[domain][3][i],website, time.toString() + ' hours', 'week');
+	    					break;
+	    				default:
+	    					break;
+	    			}
 		    	}
 	    	}
 	    }
