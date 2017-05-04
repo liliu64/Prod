@@ -54,9 +54,11 @@ h1#prod-title {
 button.btn-prod.btn-overlay {
   width: 49.4%;
   height: 19%;
-  font-size: 2.2vw;
+  font-size: 1.9vw;
   margin: 0;
-  padding: 1%;
+  padding: 0.2%;
+  text-transform: none;
+  color: white;
 }
 
 button.btn-prod {
