@@ -107,8 +107,8 @@ function Activate(url) {
 	    		//60000 ms per minute
 	    		if (History[domain][0] > time) {
 	    			var hours = time / (60 * 60 * 1000);
-		    		switch (History[domain][3][i]) {:
-	    				case "warning"
+		    		switch (History[domain][3][i]) {
+	    				case "warning":
 	    					triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
 	    					break;
 	    				case "image":
