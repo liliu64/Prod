@@ -44,7 +44,7 @@ $(document).ready(function() {
 
 // Update the datatable
 function updateTable() {
-	// $('#loadingSpinner').css('visibility', 'visible');
+	$('#loadingSpinner').css('visibility', 'visible');
 
 	chrome.storage.sync.get('History', function(data) {
 		var History = {};
@@ -64,7 +64,7 @@ function updateTable() {
 
 			// Reconvert alarm duration from ms to min
 			var durationMSarr = History[key][2].map(function(x) {
-				return x / 1000;
+				return x / 60000;
 			});
 			
 
@@ -83,7 +83,7 @@ function updateTable() {
 		if (dataSet != null && dataSet.length > 0) {
 			$('#example').dataTable().fnAddData(dataSet);
 		}
-		// $('#loadingSpinner').css('visibility', 'hidden');
+		$('#loadingSpinner').css('visibility', 'hidden');
 
 	} );
 
@@ -98,7 +98,7 @@ function addRow() {
 	var newetc2 = $('#form-etc2').val();
 
 	// Convert alarm duration from mins to ms
-	newalarm = newalarm * 1000;
+	newalarm = newalarm * 60000;
 
 	//Check url from form
 	if (!newurl) {
