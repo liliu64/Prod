@@ -62,9 +62,15 @@ function updateTable() {
 				continue;
 			}
 
-			// Clean up key
+			// Reconvert alarm duration from ms to min
+			var durationMSarr = History[key][2].map(function(x) {
+				return x / 1000;
+			});
+			
+
+			// Process URL for table: [url, duration array, per, type]
 			var cleankey = key.substring(4, key.length - 2)
-			entry.push(cleankey, History[key][2], History[key][3]);
+			entry.push(cleankey, durationMSarr,  History[key][4], History[key][3]);
 
 			dataSet.push(entry);
 		}
@@ -87,8 +93,12 @@ function updateTable() {
 function addRow() {
 	// Form values
 	var newurl = $('#form-url').val();
-	var newalarm = Number($('#form-alarm').val());
+	var newalarm = Number($('#form-alarm').val()); //assume minutes
 	var newetc = $('#form-etc').val();
+	var newetc2 = $('#form-etc2').val();
+
+	// Convert alarm duration from mins to ms
+	newalarm = newalarm * 1000;
 
 	//Check url from form
 	if (!newurl) {
@@ -104,7 +114,7 @@ function addRow() {
 		var History;
 
 		if (data['History'] == null) {
-  			History = {};
+  			History = {"*://www.google.com/*": [0, "", [0], [""], [""]]};
   			console.log("Empty History: created new history");
   		} else {
   			History = data['History'];
@@ -121,20 +131,38 @@ function addRow() {
     	var domain2 = '*://www.'+domain+'/*'
     	domain = '*://'+domain+'/*';
     	
-    	// Add to History
+   	// Add to History
     	if (domain in History) { //if this exists in History
-    		History[domain] = [History[domain][0], History[domain][1], newalarm, newetc];
+    		var alarmdur = History[domain][2];
+    		var alarmtype = History[domain][3];
+    		var alarmper = History[domain][4];
+    		alarmdur.push(newalarm);
+    		alarmtype.push(newetc);
+    		alarmper.push(newetc2);
+    		History[domain] = [History[domain][0], History[domain][1], alarmdur, alarmtype, alarmper];
     	}
     	else if (domain2 in History) {
-    		History[domain2] = [History[domain2][0], History[domain2][1], newalarm, newetc];
+    		var alarmdur = History[domain2][2];
+    		var alarmtype = History[domain2][3];
+    		var alarmper = History[domain2][4];
+    		alarmdur.push(newalarm);
+    		alarmtype.push(newetc);
+    		alarmper.push(newetc2);
+    		History[domain2] = [History[domain2][0], History[domain2][1], alarmdur, alarmtype, alarmper];
     	}
     	else { //if new rule
-			History[domain] = [0,"", newalarm, newetc];
+    		var alarmdur = [0];
+    		var alarmtype = [""];
+    		var alarmper = [""];
+    		alarmdur.push(newalarm);
+    		alarmtype.push(newetc);
+    		alarmper.push(newetc2);
+			History[domain] = [0,"", alarmdur, alarmtype, alarmper];
 		}	
 
   		// Change addmsg in html
-  		var addmsg = "New URL added. [URL: " + domain + ", AlarmRule: " + newalarm + 
-  		", AlarmType: " + newetc + "]";
+  		var addmsg = "New URL added. [URL: " + domain + ", Duration (ms): " + newalarm + 
+  		", AlarmType: " + newetc + " , " + newetc2 +  "]";
 		$('#addmsg').html(addmsg);
 		$('#addmsg').css('visibility', 'visible');
 

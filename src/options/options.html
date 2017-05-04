@@ -1,12 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<<<<<<< HEAD:src/options_custom/options.html
-	<title>Options Page</title>
 	<meta charset="utf-8">
-=======
 	<title>Prod Control Panel</title>
->>>>>>> origin/master:src/options/options.html
 
 	<!-- Important -->
 	<script type="text/javascript" src="js/jquery-3.2.0.js"></script>
@@ -30,7 +26,6 @@
 
 <body>
 
-<<<<<<< HEAD:src/options_custom/options.html
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-5 col-md-5 col-sm-8 col-xs-9 bhoechie-tab-container">
@@ -66,14 +61,22 @@
 								<label for="URL">URL</label>
 								<input type="text" class="form-control" id="form-url" placeholder="google.com">
 							</div>
+
 							<div class="form-group row">
-								<label for="Alarm Duration">Alarm Duration</label>
+								<label for="Alarm Duration">Duration (minutes)</label>
 								<input type="text" class="form-control" id="form-alarm" placeholder="3">
 							</div>
+
+							<div class="form-group row">
+								<label for="URL">Per (d)ay or (w)eek</label>
+								<input type="text" class="form-control" id="form-etc2" placeholder="d / w">
+							</div>
+
 							<div class="form-group row">
 								<label for="URL">Alarm Type</label>
 								<input type="text" class="form-control" id="form-etc" placeholder="JS / CSS / Media">
 							</div>
+
 							<input type="button" class="btn btn-primary" value="Add new alarm" id="addrow" />
 
 							<div id="addmsg" style="visibility:hidden; display: block; float:right;">Hi</div>
@@ -90,17 +93,18 @@
 							<thead>
 								<tr>
 									<th>URL</th>
-									<th>Alarm Duration</th>
+									<th>Duration (mins)</th>
+									<th>Per day / week</th>
 									<th>Alarm Type</th>
 								</tr>
 							</thead>
-							<tfoot>
+<!-- 							<tfoot>
 								<tr>
 									<th>URL</th>
 									<th>Alarm Duration</th>
 									<th>Alarm Type</th>
 								</tr>
-							</tfoot>
+							</tfoot> -->
 						</table>
 
 
@@ -114,7 +118,6 @@
 
 				</div>
 			</div>
-=======
 
 <div id="tabs">
 <!-- 	<ul>
@@ -126,7 +129,6 @@
 		<div class = "loading" id = "loadingSpinner" style="visibility:hidden">
 			<img src="images/HexClock.gif"/>
 			<div id = "loading_text">Loading Resources...</div>
->>>>>>> origin/master:src/options/options.html
 		</div>
 	</div>
 
