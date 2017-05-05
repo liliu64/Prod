@@ -60,7 +60,7 @@ function updateTable() {
 			var entry = [];
 
 			// Only get urls with nonnull alarm rules
-			if (History[key][2].length == 0) {
+			if (History[key][2].length == 1 && History[key][2][0] == 0) {
 				continue;
 			}
 
@@ -196,7 +196,7 @@ function deleteRow() {
 				bgpg.enableImages(domain, false);
 				bgpg.enableScripts(domain, false);
 				// delete History[domain];
-				History[domain] = [History[domain][0], History[domain][1], [], [], []];
+				History[domain] = [History[domain][0], History[domain][1], [0], [""], [""]];
 			}
 			else 
 				console.log("Cannot delete: domain not found in History");
