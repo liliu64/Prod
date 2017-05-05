@@ -130,7 +130,7 @@ function addRow() {
   		var domain = newurl.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
 
     	// Prepare domain to match with History index
-    	var domain2 = '*://www.'+domain+'/*'
+    	// var domain2 = '*://www.'+domain+'/*'
     	domain = '*://'+domain+'/*';
     	
    	// Add to History
@@ -143,15 +143,15 @@ function addRow() {
     		alarmper.push(newetc2);
     		History[domain] = [History[domain][0], History[domain][1], alarmdur, alarmtype, alarmper];
     	}
-    	else if (domain2 in History) {
-    		var alarmdur = History[domain2][2];
-    		var alarmtype = History[domain2][3];
-    		var alarmper = History[domain2][4];
-    		alarmdur.push(newalarm);
-    		alarmtype.push(newetc);
-    		alarmper.push(newetc2);
-    		History[domain2] = [History[domain2][0], History[domain2][1], alarmdur, alarmtype, alarmper];
-    	}
+    	// else if (domain2 in History) {
+    	// 	var alarmdur = History[domain2][2];
+    	// 	var alarmtype = History[domain2][3];
+    	// 	var alarmper = History[domain2][4];
+    	// 	alarmdur.push(newalarm);
+    	// 	alarmtype.push(newetc);
+    	// 	alarmper.push(newetc2);
+    	// 	History[domain2] = [History[domain2][0], History[domain2][1], alarmdur, alarmtype, alarmper];
+    	// }
     	else { //if new rule
     		var alarmdur = [0];
     		var alarmtype = [""];
