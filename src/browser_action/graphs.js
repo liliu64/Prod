@@ -84,13 +84,13 @@ function loadPie(svg, pieSettings) {
 	}
 
 	for (url in usedSites) {
-		if (totalTime < 500000) {
-			var degree = 0.001;
+		if (totalTime < 600000) {
+			var degree = 0.01;
 		}
 		else {
 			var degree = 0.02;	// Threshold for which data is excluded
 		}
-		if (usedSites[url] > (degree * totalTime)) {
+		if (usedSites[url] >= (degree * totalTime)) {
 			sites.push(url);
 		}
 	}
