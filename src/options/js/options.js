@@ -189,8 +189,12 @@ function deleteRow() {
 			var domain = todelete[i][0];
 			domain = '*://'+domain+'/*';
 			
-			if (domain in History)
+			if (domain in History) {
+				// re-enable images and scripts for selected urls to delete
+				enableImages(domain, false);
+				enableScripts(domain, false);
 				delete History[domain];
+			}
 			else 
 				console.log("Cannot delete: domain not found in History");
 			
