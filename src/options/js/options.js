@@ -59,8 +59,8 @@ function updateTable() {
 		for (key in History) {
 			var entry = [];
 
-			// Only get urls with valid alarm rules
-			if (History[key][2] <= 0) {
+			// Only get urls with nonnull alarm rules
+			if (History[key][2].length == 0) {
 				continue;
 			}
 
