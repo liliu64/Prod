@@ -1,3 +1,11 @@
+/* 
+ * Code from David Buezas was used as the template for this graph 
+ * and was adjusted to meet the specific needs of this project.
+ * David Buezas' code is found at gist.github.com/dbuezas/9306799
+ * as well as on the D3 library examples website.
+ */
+
+
 var svg = d3.select("body")
 	.append("svg")
 	.append("g")
@@ -27,38 +35,80 @@ var outerArc = d3.svg.arc()
 	.innerRadius(radius * 0.9)
 	.outerRadius(radius * 0.9);
 
-var bgPage = chrome.extension.getBackgroundPage();	// background.js
-var siteData = bgPage.getData();	// key = url, value = time
-var sites = [];	// site names to use
+var color = d3.scale.category20()
+	.domain(["filler"]);
 
-// If site information is not long enough (5% of total time), do not include
-var totalTime = 0.0;
-for (url in siteData) {
-	totalTime = totalTime + siteData[url];
-}
-for (url in siteData) {
-	if (siteData[url] > (0.05 * totalTime)) {
-		sites.push(url);
+var usedSites = {};
+
+var key;
+
+function loadPie() {
+	var bgPage = chrome.extension.getBackgroundPage();	// background.js
+	var siteData = bgPage.getData();	// key = url, value = time
+	usedSites = {}; // sites used to tally time
+	var sites = [];	// site names to use
+
+	// Array of sites to be excluded from analysis, including but not limited to
+	// extension pages and new tab page
+	var excluded = ["*://newtab/*", chrome.runtime.id, "*://extensions/*"];
+
+	// If site information is not long enough (5% of total time), do not include
+	var totalTime = 0.0;
+	// Calculate total time spent in browsing session for sites included
+	for (url in siteData) {
+		// Exclude all unwanted sites
+		var exclude = false;
+		for (site in excluded) {
+			if (url.includes(excluded[site])) {
+				exclude = true;
+			}
+		}
+		// Note all wanted urls and calculate total time
+		if (!exclude) {
+			var labelName = url;
+			labelName = labelName.substring(4, labelName.length - 2);
+			labelName += ": " + FormatDuration(siteData[url]);
+			usedSites[labelName] = siteData[url];
+			totalTime = totalTime + siteData[url];
+		}
 	}
+
+	for (url in usedSites) {
+		var degree = 0.02;	// Threshold for which data is excluded
+		if (usedSites[url] > (degree * totalTime)) {
+			sites.push(url);
+		}
+	}
+
+	svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+	key = function(d){ return d.data.label; };
+
+	if ((sites.length % 10 > 0) && (sites.length % 10 < 4)) {
+		color = d3.scale.category20()
+			.domain(sites);
+	}
+	else {
+		color = d3.scale.category10()
+			.domain(sites);
+	}
+	change(loadData());
 }
 
-svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-var key = function(d){ return d.data.label; };
-
-var color = d3.scale.ordinal()
-	.domain(sites)
-	.range(["#f14b4b", "#f16837", "#ee8e11", "#7bb74e",
-		"#40bbc4", "#5275c7", "6655c3", "a255c3", "c355a4"]);
+loadPie();
 
 function loadData (){
 	var labels = color.domain();
 	return labels.map(function(label){
-		return { label: label, value: siteData[label]}
+		return { label: label, value: usedSites[label]}
 	});
 }
 
-change(loadData());
+d3.select(".refresh")
+	.on("click", function(){
+		loadPie();
+		change(loadData());
+	});
 
 
 function change(data) {
