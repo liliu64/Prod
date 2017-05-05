@@ -195,7 +195,8 @@ function deleteRow() {
 				// re-enable images and scripts for selected urls to delete
 				bgpg.enableImages(domain, false);
 				bgpg.enableScripts(domain, false);
-				delete History[domain];
+				// delete History[domain];
+				History[domain] = [History[domain][0], History[domain][1], [], [], []];
 			}
 			else 
 				console.log("Cannot delete: domain not found in History");
