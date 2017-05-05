@@ -66,7 +66,7 @@ function Activate(url) {
 
 	chrome.storage.sync.get('History', function(data) {
 		if (data['History'] == null) {
-  			History = {"*://www.google.com/*": [0, "", [0], [""], [""]]};
+  			History = {"*://google.com/*": [0, "", [0], [""], [""]]};
   		} else {
   			History = data['History'];
   		}
@@ -75,6 +75,7 @@ function Activate(url) {
 	    	return;
 	    }
 	    var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
+	    if (domain.substring(0,4) == 'www.') domain = domain.substring(4,domain.length);
 		domain = '*://'+domain+'/*';
 		var date = new Date();
 		if (lastActive in History) {
@@ -101,33 +102,45 @@ function Activate(url) {
 	    var website = domain.substring(4,domain.length - 2);
 
 	    
+	    var maxIndex = -1;
+	    var maxHours = 0; 
 	    for (var i = 0; i < History[domain][2].length; i++) {
 	    	var time = History[domain][2][i];
 	    	if (time > 0) {
 	    		//60000 ms per minute
 	    		if (History[domain][0] > time) {
 	    			var hours = time / (60 * 60 * 1000);
-		    		switch (History[domain][3][i]) {
-	    				case "warning":
-	    					triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
-	    					break;
-	    				case "image":
-	    					disableImages();
-	    					triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
-	    					break;
-	    				case "scripts":
-	    					disableScripts();
-	    					triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
-	    					break;
-	    				case "style":
-	    					disableStyles();
-	    					triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
-	    					break;
-	    				default:
-	    					break;
+	    			if (hours > maxHours) {
+	    				maxIndex = i;
+	    				maxHours = hours;
 	    			}
 		    	}
 	    	}
+	    }
+	    if (maxIndex != -1) {
+	    	var i = maxIndex;
+	    	switch (History[domain][3][i]) {
+				case "warning":
+					triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
+					break;
+				case "images":
+					disableImages(domain, true);
+					triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
+					break;
+				case "scripts":
+					disableScripts(domain, true);
+					triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
+					break;
+				case "styles":
+					chrome.tabs.getCurrent(function(tab) {
+						disableStyles(tab.id);
+					});
+					triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
+					break;
+				default:
+					break;
+			}
+	    			
 	    }
 
 	    // Non array version of alarms
@@ -167,6 +180,7 @@ function setCurrentPagePermission(feature, setting) {
   chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
     currTab = tabs[0].url + "/";
     var domain = currTab.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
+    if (domain.substring(0,4) == 'www.') domain = domain.substring(4,domain.length);
     domain = '*://'+domain+'/*';
     alert(domain);
     feature.set({
