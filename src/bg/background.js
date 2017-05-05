@@ -177,25 +177,32 @@ function setCurrentPagePermission(feature, setting) {
   });
 }
 
-function disableImages() {  
-  setCurrentPagePermission(chrome.contentSettings.images, 'block');
+function setPagePermission(matchPattern, feature, setting, reload) {  
+  feature.set({
+    'primaryPattern': matchPattern,
+    'setting': setting
+  });
+  if(reload) { reloadCurrentTab(); }
 }
 
-function enableImages() {  
-  setCurrentPagePermission(chrome.contentSettings.images, 'allow');
+function disableImages(matchPattern, reload) {  
+  setPagePermission(matchPattern, chrome.contentSettings.images, 'block', reload);
 }
 
-function disableScripts() {  
-  setCurrentPagePermission(chrome.contentSettings.javascript, 'block');
+function enableImages(matchPattern, reload) {  
+  setPagePermission(matchPattern, chrome.contentSettings.images, 'allow', reload);
 }
 
-function enableScripts() {  
-  setCurrentPagePermission(chrome.contentSettings.javascript, 'allow');
+function disableScripts(matchPattern, reload) {  
+  setPagePermission(matchPattern, chrome.contentSettings.javascript, 'block', reload);
 }
 
-function disableStyles(){
+function enableScripts(matchPattern, reload) {  
+  setPagePermission(matchPattern, chrome.contentSettings.javascript, 'allow', reload);
+}
+
+function disableStyles(tabID){
   chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-    alert(tabs[0].id);
     chrome.tabs.sendMessage(tabs[0].id, {command: 'modify_styles', setting: 'disable'}, 
     function(response) {
       //alert(response.numStyles);
@@ -203,10 +210,9 @@ function disableStyles(){
   });
 }
 
-function enableStyles(){
+function enableStyles(tabID){
   chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-    alert(tabs[0].id);
-    chrome.tabs.sendMessage(tabs[0].id, {command: 'modify_styles', setting: 'enable'}, 
+    chrome.tabs.sendMessage(tabID, {command: 'modify_styles', setting: 'enable'}, 
     function(response) {
       //alert(response.numStyles);
     });
