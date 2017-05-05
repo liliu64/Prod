@@ -74,7 +74,12 @@ function loadPie() {
 	}
 
 	for (url in usedSites) {
-		var degree = 0.02;	// Threshold for which data is excluded
+		if (totalTime < 500000) {
+			var degree = 0.001;
+		}
+		else {
+			var degree = 0.02;	// Threshold for which data is excluded
+		}
 		if (usedSites[url] > (degree * totalTime)) {
 			sites.push(url);
 		}

@@ -63,7 +63,7 @@ function create(alarm) {
     			urlName = urlName + ": (";
     		}
     		urlName = urlName + FormatDuration(alarm[1]) + ", ";
-    		urlName = urlName + Math.floor(alarm[1]/alarm[2] * 100) + "%)";
+    		urlName = urlName + (Math.floor(alarm[1]/alarm[2] * 1000)/10) + "%)";
     		return urlName;
     	});
 
@@ -85,7 +85,7 @@ function create(alarm) {
 				return 400;
 			}
 			else {
-				return 4 * alarm[1]/alarm[2] * 100;
+				return 4.0 * (alarm[1]/alarm[2]) * 100;
 			}
 		});
 }
