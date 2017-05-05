@@ -1,8 +1,10 @@
 d3.select(".refresh")
 	.on("click", function(){
 		// Refresh pie graph
-		loadPie();
-		change(loadData());
+		for (i = 0; i < 2; i++) {
+			d3.select("#Pie_Chart").remove();
+		}
+		createPie();
 		
 		// Refresh progress bars
 		for (i = 0; i < numAlarms; i++) {

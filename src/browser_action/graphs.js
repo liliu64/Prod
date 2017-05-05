@@ -1,51 +1,61 @@
 /* 
  * Code from David Buezas was used as the template for this graph 
  * and was adjusted to meet the specific needs of this project.
+ * David Buezas code originally a template for a pie chart with
+ * labels and smooth updating.
  * David Buezas' code is found at gist.github.com/dbuezas/9306799
  * as well as on the D3 library examples website.
  */
 
+var svg;
 
-var svg = d3.select("body")
+/* Creates and draws the pie chart on the page */
+function createPie() {
+	/* Create the pie chart object */
+	svg = d3.select(".piechart")
 	.append("svg")
+	.attr("id", "Pie_Chart")
 	.append("g")
+	.attr("id", "Pie_Chart");
 
-svg.append("g")
-	.attr("class", "slices");
-svg.append("g")
-	.attr("class", "labels");
-svg.append("g")
-	.attr("class", "lines");
+	svg.append("g")
+		.attr("class", "slices");
+	svg.append("g")
+		.attr("class", "labels");
+	svg.append("g")
+		.attr("class", "lines");
 
-var width = 960,
-    height = 450,
-	radius = Math.min(width, height) / 2;
+	/* Pie chart settings */
+	var width = 960,
+	    height = 450,
+		radius = Math.min(width, height) / 2;
 
-var pie = d3.layout.pie()
-	.sort(null)
-	.value(function(d) {
-		return d.value;
-	});
+	var pie = d3.layout.pie()
+		.sort(null)
+		.value(function(d) {
+			return d.value;
+		});
 
-var arc = d3.svg.arc()
-	.outerRadius(radius * 0.8)
-	.innerRadius(radius * 0.4);
+	var arc = d3.svg.arc()
+		.outerRadius(radius * 0.8)
+		.innerRadius(radius * 0.4);
 
-var outerArc = d3.svg.arc()
-	.innerRadius(radius * 0.9)
-	.outerRadius(radius * 0.9);
+	var outerArc = d3.svg.arc()
+		.innerRadius(radius * 0.9)
+		.outerRadius(radius * 0.9);
 
-var color = d3.scale.category20()
-	.domain(["filler"]);
+	var pieSettings = [width, height, radius, pie, arc, outerArc];
 
-var usedSites = {};
+	loadPie(svg, pieSettings);
+}
 
-var key;
+createPie();
 
-function loadPie() {
+/* Retrieve data and draw a pie */
+function loadPie(svg, pieSettings) {
 	var bgPage = chrome.extension.getBackgroundPage();	// background.js
 	var siteData = bgPage.getData();	// key = url, value = time
-	usedSites = {}; // sites used to tally time
+	var usedSites = {}; // sites used to tally time
 	var sites = [];	// site names to use
 
 	// Array of sites to be excluded from analysis, including but not limited to
@@ -85,36 +95,34 @@ function loadPie() {
 		}
 	}
 
-	svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+	svg.attr("transform", "translate(" + pieSettings[0] / 2 + "," + pieSettings[1] / 2 + ")");
 
-	key = function(d){ return d.data.label; };
+	var key = function(d){ return d.data.label; };
 
 	if ((sites.length % 10 > 0) && (sites.length % 10 < 4)) {
-		color = d3.scale.category20()
+		var color = d3.scale.category20()
 			.domain(sites);
 	}
 	else {
-		color = d3.scale.category10()
+		var color = d3.scale.category10()
 			.domain(sites);
 	}
-	change(loadData());
+	change(loadData(color, usedSites), color, svg, key, pieSettings);
 }
 
-loadPie();
-
-function loadData (){
+/* Load all of the data and labels of the pie chart */
+function loadData (color, usedSites){
 	var labels = color.domain();
 	return labels.map(function(label){
 		return { label: label, value: usedSites[label]}
 	});
 }
 
-
-function change(data) {
-
+/* Update the graph */
+function change(data, color, svg, key, pieSettings) {
 	/* ------- PIE SLICES -------*/
 	var slice = svg.select(".slices").selectAll("path.slice")
-		.data(pie(data), key);
+		.data(pieSettings[3](data), key);
 
 	slice.enter()
 		.insert("path")
@@ -128,7 +136,7 @@ function change(data) {
 			var interpolate = d3.interpolate(this._current, d);
 			this._current = interpolate(0);
 			return function(t) {
-				return arc(interpolate(t));
+				return pieSettings[4](interpolate(t));
 			};
 		})
 
@@ -138,7 +146,7 @@ function change(data) {
 	/* ------- TEXT LABELS -------*/
 
 	var text = svg.select(".labels").selectAll("text")
-		.data(pie(data), key);
+		.data(pieSettings[3](data), key);
 
 	text.enter()
 		.append("text")
@@ -158,8 +166,8 @@ function change(data) {
 			this._current = interpolate(0);
 			return function(t) {
 				var d2 = interpolate(t);
-				var pos = outerArc.centroid(d2);
-				pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1);
+				var pos = pieSettings[5].centroid(d2);
+				pos[0] = pieSettings[2] * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
 				return "translate("+ pos +")";
 			};
 		})
@@ -179,7 +187,7 @@ function change(data) {
 	/* ------- SLICE TO TEXT POLYLINES -------*/
 
 	var polyline = svg.select(".lines").selectAll("polyline")
-		.data(pie(data), key);
+		.data(pieSettings[3](data), key);
 	
 	polyline.enter()
 		.append("polyline");
@@ -191,9 +199,9 @@ function change(data) {
 			this._current = interpolate(0);
 			return function(t) {
 				var d2 = interpolate(t);
-				var pos = outerArc.centroid(d2);
-				pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
-				return [arc.centroid(d2), outerArc.centroid(d2), pos];
+				var pos = pieSettings[5].centroid(d2);
+				pos[0] = pieSettings[2] * 0.95 * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
+				return [pieSettings[4].centroid(d2), pieSettings[5].centroid(d2), pos];
 			};			
 		});
 	

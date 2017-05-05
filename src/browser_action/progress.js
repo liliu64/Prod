@@ -57,7 +57,7 @@ function create(alarm) {
     		var urlName = alarm[0].substring(4, alarm[0].length - 2);
     		urlName = urlName + " - " + alarm[3] + " (" + FormatDuration(alarm[2]) + ")";
     		if (alarm[1]/alarm[2] > 1) {
-    			urlName = urlName + ": TIME'S UP (";
+    			urlName = urlName + ": TIME'S UP! (";
     		}
     		else {
     			urlName = urlName + ": (";
