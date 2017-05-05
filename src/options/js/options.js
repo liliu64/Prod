@@ -1,3 +1,5 @@
+bgpg = chrome.extension.getBackgroundPage();
+
 // window.localStorage.clear();
 
 /* ----------------
@@ -191,8 +193,8 @@ function deleteRow() {
 			
 			if (domain in History) {
 				// re-enable images and scripts for selected urls to delete
-				enableImages(domain, false);
-				enableScripts(domain, false);
+				bgpg.enableImages(domain, false);
+				bgpg.enableScripts(domain, false);
 				delete History[domain];
 			}
 			else 
