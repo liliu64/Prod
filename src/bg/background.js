@@ -26,6 +26,10 @@ function getData() {
 	return output;
 }
 
+function wrapDomain (domain) {
+  return '*://*.'+domain+'/*';
+}
+
 // Old second handler, transfered all flow to Activate
 // function Update(date, tabId, url) {
   
@@ -75,7 +79,7 @@ function Activate(url, tabId) {
       }
       var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
       if (domain.substring(0,4) == 'www.') domain = domain.substring(4,domain.length);
-    domain = '*://'+domain+'/*';
+    domain = wrapDomain(domain);
     var date = new Date();
     if (lastActive in History) {
       History[lastActive][0] += date.getTime() - new Date(History[lastActive][1]).getTime();
@@ -124,7 +128,7 @@ function Activate(url, tabId) {
           break;
         case "images":
           chrome.contentSettings.images.get({primaryUrl: url}, function (details) {
-            if(details.setting == 'allow') disableImages(domain, false);
+            if(details.setting == 'allow') disableImages(domain, true);
             else triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
           });
           break;
@@ -172,6 +176,11 @@ function HandleActivated(activeInfo) {
 
 chrome.tabs.onUpdated.addListener(HandleUpdate);
 chrome.tabs.onActivated.addListener(HandleActivated);
+
+chrome.runtime.onInstalled.addListener(function (object) {
+   chrome.tabs.create({url: optionsURL}, function (tab) {
+   });
+});
 
 function reloadCurrentTab() {  
   chrome.tabs.reload();

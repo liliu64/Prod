@@ -71,7 +71,7 @@ function updateTable() {
 			
 
 			// Process URL for table: [url, duration array, per, type]
-			var cleankey = key.substring(4, key.length - 2)
+			var cleankey = key.substring(6, key.length - 2)
 			entry.push(cleankey, durationMSarr,  History[key][4], History[key][3]);
 
 			dataSet.push(entry);
@@ -131,7 +131,7 @@ function addRow() {
 
     	// Prepare domain to match with History index
     	// var domain2 = '*://www.'+domain+'/*'
-    	domain = '*://'+domain+'/*';
+    	domain = bgpg.wrapDomain(domain);
     	
    	// Add to History
     	if (domain in History) { //if this exists in History
@@ -189,7 +189,7 @@ function deleteRow() {
 		for (i = 0; i < length; i++) {
 			// Get url
 			var domain = todelete[i][0];
-			domain = '*://'+domain+'/*';
+			domain = bgpg.wrapDomain(domain);
 			
 			if (domain in History) {
 				// re-enable images and scripts for selected urls to delete
