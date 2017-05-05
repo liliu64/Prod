@@ -104,12 +104,6 @@ function loadData (){
 	});
 }
 
-d3.select(".refresh")
-	.on("click", function(){
-		loadPie();
-		change(loadData());
-	});
-
 
 function change(data) {
 

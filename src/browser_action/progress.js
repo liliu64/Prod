@@ -43,7 +43,7 @@ function create(alarm) {
 		.attr('class', 'bg-rect')
 		.attr('rx', 10)
 		.attr('ry', 10)
-		.attr('x', 300)
+		.attr('x', 400)
 		.attr('y', 0)
 		.attr('fill', 'grey')
 		.attr('height', 10)
@@ -71,7 +71,7 @@ function create(alarm) {
 					.attr('class', 'progress-rect')
 					.attr('rx', 10)
 					.attr('ry', 10)
-					.attr('x', 300)
+					.attr('x', 400)
 					.attr('y', 0)
 					.attr('fill', 'brown')
 					.attr('height', 10)
@@ -89,12 +89,3 @@ function create(alarm) {
 			}
 		});
 }
-
-d3.select(".refresh")
-	.on("click", function(){
-		for (i = 0; i < numAlarms; i++) {
-			d3.select("#Alarm_Progress").remove();
-		}
-		numAlarms = 0;
-		updateBars();
-	});
