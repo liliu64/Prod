@@ -14,6 +14,17 @@
   text-transform: none;
 }
 
+.prod-page {
+  background-color: #002431;
+}
+
+#message-welcome {
+  font-size: 1.5vw;
+  color: white;
+  padding: 2%;
+  width: 80%;
+}
+
 h1#prod-title {
   text-align: center;
   position: absolute;
