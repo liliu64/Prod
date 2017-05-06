@@ -71,7 +71,7 @@ function updateTable() {
 			
 
 			// Process URL for table: [url, duration array, per, type]
-			var cleankey = key.substring(6, key.length - 2)
+			var cleankey = bgpg.unWrapDomain (key)
 			entry.push(cleankey, durationMSarr,  History[key][4], History[key][3]);
 
 			dataSet.push(entry);

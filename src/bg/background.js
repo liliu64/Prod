@@ -30,6 +30,10 @@ function wrapDomain (domain) {
   return '*://*.'+domain+'/*';
 }
 
+function unWrapDomain (domain) {
+  return domain.substring(6,domain.length - 2);
+}
+
 // Old second handler, transfered all flow to Activate
 // function Update(date, tabId, url) {
   
@@ -102,7 +106,7 @@ function Activate(url, tabId) {
         History[domain] = [0,date.toJSON(),[0], [""], [""]];
       }
 
-      var website = domain.substring(4,domain.length - 2);
+      var website = unWrapDomain (domain);
 
       
       var maxIndex = -1;
