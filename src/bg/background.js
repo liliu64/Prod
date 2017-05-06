@@ -173,9 +173,20 @@ function HandleActivated(activeInfo) {
 	});
 }
 
+//@JD: Can you fill in this TODO?
+function handleIdle(newState) {
+  if(newstate == "locked" || newstate == "idle") {
+    //TODO: STOP TRACKING TIME FOR CURRENTLY TRACKED TAB
+  }
+  else if(newstate == "active") {
+    chrome.tabs.getCurrent(function(tab) {
+      Activate(tab.url, tabId);
+  });
+};
 
 chrome.tabs.onUpdated.addListener(HandleUpdate);
 chrome.tabs.onActivated.addListener(HandleActivated);
+chrome.idle.onStateChanged.addListener(HandleIdle)
 
 chrome.runtime.onInstalled.addListener(function (object) {
    chrome.tabs.create({url: optionsURL}, function (tab) {
