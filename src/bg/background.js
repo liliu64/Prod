@@ -174,14 +174,15 @@ function HandleActivated(activeInfo) {
 }
 
 //@JD: Can you fill in this TODO?
-function handleIdle(newState) {
+function HandleIdle(newState) {
   if(newstate == "locked" || newstate == "idle") {
     //TODO: STOP TRACKING TIME FOR CURRENTLY TRACKED TAB
   }
   else if(newstate == "active") {
     chrome.tabs.getCurrent(function(tab) {
       Activate(tab.url, tabId);
-  });
+    });
+  }
 };
 
 chrome.tabs.onUpdated.addListener(HandleUpdate);
