@@ -1,3 +1,10 @@
+function loadAll() {
+	createPie();
+	drawBars();
+}
+
+window.onload = loadAll();
+
 d3.select(".refresh")
 	.on("click", function(){
 		// Refresh pie graph
@@ -11,5 +18,5 @@ d3.select(".refresh")
 			d3.select("#Alarm_Progress").remove();
 		}
 		numAlarms = 0;
-		updateBars();
+		drawBars();
 	});
