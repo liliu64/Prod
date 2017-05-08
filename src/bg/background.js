@@ -101,7 +101,7 @@ function Activate(url, tabId) {
 
     lastActive = domain;
       if (domain in History) {
-      History[domain][1] = date.toJSON();
+      	History[domain][1] = date.toJSON();
       } else {
         History[domain] = [0,date.toJSON(),[0], [""], [""]];
       }
@@ -177,10 +177,28 @@ function HandleActivated(activeInfo) {
 	});
 }
 
-//@JD: Can you fill in this TODO?
 function HandleIdle(newState) {
   if(newstate == "locked" || newstate == "idle") {
-    //TODO: STOP TRACKING TIME FOR CURRENTLY TRACKED TAB
+    //stop tracking time (used bug proof form, stop all tracking)
+    chrome.storage.sync.get('History', function(data) {
+	    if (data['History'] == null) {
+	        History = {"*://google.com/*": [0, "", [0], [""], [""]]};
+	      } else {
+	        History = data['History'];
+	      }
+	  
+	    for (key in History) {
+	      if (key[1] != "") {
+	        key[0] = date.getTime() - new Date(key[1]).getTime();
+	        key[1] = "";
+	      }
+	    }
+
+	    lastActive = "";
+
+	    chrome.storage.sync.set({'History': History});
+	});
+
   }
   else if(newstate == "active") {
     chrome.tabs.getCurrent(function(tab) {
