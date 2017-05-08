@@ -1,5 +1,5 @@
 .prod-overlay {
-  z-index: 9999999999;
+  z-index: 9999999;
   height: 22vw;
   width: 45vw;
   background-color: #002431;
@@ -12,17 +12,6 @@
   font-family: "Open Sans",Arial,"Lucida Grande",sans-serif;
   font-weight: normal;
   text-transform: none;
-}
-
-.prod-page {
-  background-color: #002431;
-}
-
-#message-welcome {
-  font-size: 1.5vw;
-  color: white;
-  padding: 2%;
-  width: 80%;
 }
 
 h1#prod-title {

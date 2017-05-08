@@ -49,6 +49,8 @@ function createPie() {
 	loadPie(svg, pieSettings);
 }
 
+createPie();
+
 /* Retrieve data and draw a pie */
 function loadPie(svg, pieSettings) {
 	var bgPage = chrome.extension.getBackgroundPage();	// background.js
@@ -58,7 +60,7 @@ function loadPie(svg, pieSettings) {
 
 	// Array of sites to be excluded from analysis, including but not limited to
 	// extension pages and new tab page
-	var excluded = ["newtab", chrome.runtime.id, "extensions"];
+	var excluded = ["*://newtab/*", chrome.runtime.id, "*://extensions/*"];
 
 	// If site information is not long enough (5% of total time), do not include
 	var totalTime = 0.0;
@@ -67,13 +69,14 @@ function loadPie(svg, pieSettings) {
 		// Exclude all unwanted sites
 		var exclude = false;
 		for (site in excluded) {
-			if (bgPage.unWrapDomain(url).includes(excluded[site])) {
+			if (url.includes(excluded[site])) {
 				exclude = true;
 			}
 		}
 		// Note all wanted urls and calculate total time
 		if (!exclude) {
-			var labelName = bgPage.unWrapDomain(url);
+			var labelName = url;
+			labelName = labelName.substring(4, labelName.length - 2);
 			labelName += ": " + FormatDuration(siteData[url]);
 			usedSites[labelName] = siteData[url];
 			totalTime = totalTime + siteData[url];
@@ -81,8 +84,13 @@ function loadPie(svg, pieSettings) {
 	}
 
 	for (url in usedSites) {
-		var degree = 0.01;	// Threshold for which data is excluded
-		if (usedSites[url] >= (degree * totalTime)) {
+		if (totalTime < 500000) {
+			var degree = 0.001;
+		}
+		else {
+			var degree = 0.02;	// Threshold for which data is excluded
+		}
+		if (usedSites[url] > (degree * totalTime)) {
 			sites.push(url);
 		}
 	}
@@ -143,7 +151,6 @@ function change(data, color, svg, key, pieSettings) {
 	text.enter()
 		.append("text")
 		.attr("dy", ".35em")
-		.attr("class", "pielabels")
 		.text(function(d) {
 			return d.data.label;
 		});
@@ -160,7 +167,7 @@ function change(data, color, svg, key, pieSettings) {
 			return function(t) {
 				var d2 = interpolate(t);
 				var pos = pieSettings[5].centroid(d2);
-				pos[0] = pieSettings[2] * (midAngle(d2) < Math.PI ? 1 : -1);
+				pos[0] = pieSettings[2] * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
 				return "translate("+ pos +")";
 			};
 		})
@@ -193,7 +200,7 @@ function change(data, color, svg, key, pieSettings) {
 			return function(t) {
 				var d2 = interpolate(t);
 				var pos = pieSettings[5].centroid(d2);
-				pos[0] = pieSettings[2] * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
+				pos[0] = pieSettings[2] * 0.95 * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
 				return [pieSettings[4].centroid(d2), pieSettings[5].centroid(d2), pos];
 			};			
 		});
