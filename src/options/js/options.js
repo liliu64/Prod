@@ -92,6 +92,9 @@ function updateTable() {
 			// console.log(perArr);
 			entry.push(cleankey, durationMSarr, perArr, actionArr);
 
+			var cleankey = bgpg.unWrapDomain (key)
+			entry.push(cleankey, durationMSarr,  History[key][4], History[key][3]);
+
 			dataSet.push(entry);
 		}
 

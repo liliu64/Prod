@@ -30,6 +30,10 @@ function wrapDomain (domain) {
   return '*://*.'+domain+'/*';
 }
 
+function unWrapDomain (domain) {
+  return domain.substring(6,domain.length - 2);
+}
+
 // Old second handler, transfered all flow to Activate
 // function Update(date, tabId, url) {
   
@@ -97,12 +101,12 @@ function Activate(url, tabId) {
 
     lastActive = domain;
       if (domain in History) {
-      History[domain][1] = date.toJSON();
+      	History[domain][1] = date.toJSON();
       } else {
         History[domain] = [0,date.toJSON(),[0], [""], [""]];
       }
 
-      var website = domain.substring(4,domain.length - 2);
+      var website = unWrapDomain (domain);
 
       
       var maxIndex = -1;
@@ -173,9 +177,39 @@ function HandleActivated(activeInfo) {
 	});
 }
 
+function HandleIdle(newState) {
+  if(newstate == "locked" || newstate == "idle") {
+    //stop tracking time (used bug proof form, stop all tracking)
+    chrome.storage.sync.get('History', function(data) {
+	    if (data['History'] == null) {
+	        History = {"*://google.com/*": [0, "", [0], [""], [""]]};
+	      } else {
+	        History = data['History'];
+	      }
+	  
+	    for (key in History) {
+	      if (key[1] != "") {
+	        key[0] = date.getTime() - new Date(key[1]).getTime();
+	        key[1] = "";
+	      }
+	    }
+
+	    lastActive = "";
+
+	    chrome.storage.sync.set({'History': History});
+	});
+
+  }
+  else if(newstate == "active") {
+    chrome.tabs.getCurrent(function(tab) {
+      Activate(tab.url, tabId);
+    });
+  }
+};
 
 chrome.tabs.onUpdated.addListener(HandleUpdate);
 chrome.tabs.onActivated.addListener(HandleActivated);
+chrome.idle.onStateChanged.addListener(HandleIdle)
 
 chrome.runtime.onInstalled.addListener(function (object) {
    chrome.tabs.create({url: optionsURL}, function (tab) {
