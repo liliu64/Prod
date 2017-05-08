@@ -81,7 +81,7 @@ function barWithFlags(alarm) {
 		.attr("y", 5)
 		.attr("x", 0)
     	.attr("dy", ".35em")
-    	.text(alarm[0].substring(4, alarm[0].length - 2))
+    	.text(bgPage.unWrapDomain(alarm[0]))
     	.attr("class", "bar-URLs");
 
     svg.append('text')
@@ -164,7 +164,7 @@ function createBar(alarm) {
     	.attr("dy", ".35em")
     	.attr("class", "barlabels")
     	.text(function(){
-    		var urlName = alarm[0].substring(4, alarm[0].length - 2);
+    		var urlName = bgPage.unWrapDomain(alarm[0]);
     		urlName = urlName + " - " + alarm[3] + " (" + FormatDuration(alarm[2]) + ")";
     		if (alarm[1]/alarm[2] > 1) {
     			urlName = urlName + ": TIME'S UP! (";

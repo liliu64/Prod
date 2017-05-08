@@ -58,7 +58,7 @@ function loadPie(svg, pieSettings) {
 
 	// Array of sites to be excluded from analysis, including but not limited to
 	// extension pages and new tab page
-	var excluded = ["*://newtab/*", chrome.runtime.id, "*://extensions/*"];
+	var excluded = ["newtab", chrome.runtime.id, "extensions"];
 
 	// If site information is not long enough (5% of total time), do not include
 	var totalTime = 0.0;
@@ -67,14 +67,13 @@ function loadPie(svg, pieSettings) {
 		// Exclude all unwanted sites
 		var exclude = false;
 		for (site in excluded) {
-			if (url.includes(excluded[site])) {
+			if (bgPage.unWrapDomain(url).includes(excluded[site])) {
 				exclude = true;
 			}
 		}
 		// Note all wanted urls and calculate total time
 		if (!exclude) {
-			var labelName = url;
-			labelName = labelName.substring(4, labelName.length - 2);
+			var labelName = bgPage.unWrapDomain(url);
 			labelName += ": " + FormatDuration(siteData[url]);
 			usedSites[labelName] = siteData[url];
 			totalTime = totalTime + siteData[url];
