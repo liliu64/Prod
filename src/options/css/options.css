@@ -101,3 +101,21 @@ th {
     margin-bottom:20px !important; 
     margin-top:20px !important;
 }*/
+
+#form-alarm {
+	min-width: 0; 
+	width: auto;
+	display:inline;
+}
+
+#form-etc {
+	min-width: 0; 
+	width: auto;
+	display:inline;	
+}
+
+#form-etc2 {
+	min-width: 0; 
+	width: auto;
+	display:inline;	
+}

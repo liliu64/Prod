@@ -72,7 +72,25 @@ function updateTable() {
 
 			// Process URL for table: [url, duration array, per, type]
 			var cleankey = key.substring(6, key.length - 2)
-			entry.push(cleankey, durationMSarr,  History[key][4], History[key][3]);
+
+			// Remove empty indexes
+			durationMSarr = durationMSarr.filter(function(x) {
+				return x != 0
+			});
+			var perArr = History[key][4].filter(function(x) {
+				return x != "";
+			});
+			var perArr = perArr.map(function(x) {
+				if (x == 'd') return "day";
+				if (x == 'w') return "week";
+			});
+
+			var actionArr = History[key][3].filter(function(x) {
+				return x != ""
+			});
+
+			// console.log(perArr);
+			entry.push(cleankey, durationMSarr, perArr, actionArr);
 
 			dataSet.push(entry);
 		}
@@ -97,7 +115,7 @@ function addRow() {
 	var newurl = $('#form-url').val();
 	var newalarm = Number($('#form-alarm').val()); //assume minutes
 	var newetc = $('#form-etc').val();
-	var newetc2 = $('#form-etc2').val();
+	var newetc2 = $('#form-etc2').val(); //per
 
 	// Convert alarm duration from mins to ms
 	newalarm = newalarm * 60000;
@@ -116,7 +134,7 @@ function addRow() {
 		var History;
 
 		if (data['History'] == null) {
-  			History = {"*://www.google.com/*": [0, "", [0], [""], [""]]};
+  			History = {"*://google.com/*": [0, "", [0], [""], [""]]};
   			console.log("Empty History: created new history");
   		} else {
   			History = data['History'];
@@ -163,8 +181,8 @@ function addRow() {
 		}	
 
   		// Change addmsg in html
-  		var addmsg = "New URL added. [URL: " + domain + ", Duration (ms): " + newalarm + 
-  		", AlarmType: " + newetc + " , " + newetc2 +  "]";
+  		var addmsg = "New URL added. [URL: " + domain + ", Duration (ms): " + newalarm +
+  		" per " + newetc2 +  ", Action: " + newetc + "]";
 		$('#addmsg').html(addmsg);
 		$('#addmsg').css('visibility', 'visible');
 

@@ -39,10 +39,10 @@ you've spent on the page), disabling images, disabling scripts, and disabling st
 				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 bhoechie-tab-menu">
 					<div class="list-group">
 						<a href="#" class="list-group-item active text-center">
-							<h4 class="glyphicon glyphicon-plane"></h4><br/>Alarms
+							<h4 ></h4><br/>Alarms
 						</a>
 						<a href="#" class="list-group-item text-center">
-							<h4 class="glyphicon glyphicon-road"></h4><br/>Etc
+							<h4></h4><br/>Etc
 						</a>
 					</div>
 				</div>
@@ -68,19 +68,29 @@ you've spent on the page), disabling images, disabling scripts, and disabling st
 								<input type="text" class="form-control" id="form-url" placeholder="google.com">
 							</div>
 
-							<div class="form-group row">
+							<div class="form-inline row">
 								<label for="Alarm Duration">Duration (minutes)</label>
 								<input type="text" class="form-control" id="form-alarm" placeholder="3">
 							</div>
 
-							<div class="form-group row">
-								<label for="URL">Per (d)ay or (w)eek</label>
-								<input type="text" class="form-control" id="form-etc2" placeholder="d / w">
+							<div class="form-inline row">
+								<label for="URL">per</label>
+								<!-- <input type="text" class="form-control" id="form-etc2" placeholder="d / w"> -->
+								<select class="form-control" id="form-etc2">
+									<option value="d">day</option>
+									<option value="w">week</option>
+								</select>
+
 							</div>
 
 							<div class="form-group row">
-								<label for="URL">Alarm Type</label>
-								<input type="text" class="form-control" id="form-etc" placeholder="JS / CSS / Media">
+								<label for="URL">Action</label>
+								<select class="form-control" id="form-etc">
+									<option value="warning">Display warning</option>
+									<option value="scripts">Disable scripts</option>
+									<option value="styles">Disable styles</option>
+									<option value="images">Disable images</option>
+								</select>
 							</div>
 
 							<input type="button" class="btn btn-primary" value="Add new alarm" id="addrow" />
@@ -100,8 +110,8 @@ you've spent on the page), disabling images, disabling scripts, and disabling st
 								<tr>
 									<th>URL</th>
 									<th>Duration (mins)</th>
-									<th>Per day / week</th>
-									<th>Alarm Type</th>
+									<th>Per</th>
+									<th>Action</th>
 								</tr>
 							</thead>
 <!-- 							<tfoot>
