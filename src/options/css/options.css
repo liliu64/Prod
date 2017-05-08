@@ -119,3 +119,11 @@ th {
 	width: auto;
 	display:inline;	
 }
+
+.nostyleplease {
+	all: initial;
+	* {
+   	all: unset;
+   }
+
+}
