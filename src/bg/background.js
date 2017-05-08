@@ -81,16 +81,12 @@ function Activate(url, tabId) {
       if (domain.substring(0,4) == 'www.') domain = domain.substring(4,domain.length);
     domain = wrapDomain(domain);
     var date = new Date();
-    if (lastActive in History) {
-      History[lastActive][0] += date.getTime() - new Date(History[lastActive][1]).getTime();
-      History[lastActive][1] = "";
-    }
 
     // bug catcher 
     for (key in History) {
-      if (key[1] != "") {
-        key[0] = date.getTime() - new Date(key[1]).getTime();
-        key[1] = "";
+      if (History[key][1] != "") {
+        History[key][0] += date.getTime() - new Date(History[key][1]).getTime();
+        History[key][1] = "";
       }
     }
 
@@ -122,29 +118,36 @@ function Activate(url, tabId) {
       }
       if (maxIndex != -1) {
         var i = maxIndex;
+        var time = History[domain][2][i];
+
+        var period = "";
+       	if (History[domain][4][i] == 'w') {
+       		period = 'week'
+       	} else period = 'day';
+
         switch (History[domain][3][i]) {
         case "warning":
-          triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
+          triggerOverlay(History[domain][3][i],website, FormatDuration(time), period);
           break;
         case "images":
           chrome.contentSettings.images.get({primaryUrl: url}, function (details) {
             if(details.setting == 'allow') disableImages(domain, true);
-            else triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
+            else triggerOverlay(History[domain][3][i],website, FormatDuration(time), period);
           });
           break;
         case "scripts":
           chrome.contentSettings.javascript.get({primaryUrl: url}, function (details) {
             if(details.setting == 'allow') disableScripts(domain, true);
-            else triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]);
+            else triggerOverlay(History[domain][3][i],website, FormatDuration(time), period);
           });
           break;
         case "styles":
           disableStyles(tabId, 
-          triggerOverlay(History[domain][3][i],website, hours + ' hours', History[domain][4][i]));
+          triggerOverlay(History[domain][3][i],website, FormatDuration(time), period));
           break;
         default:
           break;
-      }   
+      	}   
       }
 
       // Non array version of alarms
@@ -176,6 +179,46 @@ function HandleActivated(activeInfo) {
 
 chrome.tabs.onUpdated.addListener(HandleUpdate);
 chrome.tabs.onActivated.addListener(HandleActivated);
+
+function HandleIdle(newState) {
+  if(newState == "locked" || newState == "idle") {
+    //stop tracking time (used bug proof form, stop all tracking)
+    chrome.storage.sync.get('History', function(data) {
+	    if (data['History'] == null) {
+	        History = {"*://google.com/*": [0, "", [0], [""], [""]]};
+	      } else {
+	        History = data['History'];
+	      }
+	  
+	    // bug catcher 
+	    var date = new Date();
+
+	    for (key in History) {
+	      if (History[key][1] != "") {
+	        History[key][0] += date.getTime() - new Date(History[key][1]).getTime();
+	        History[key][1] = "";
+	      }
+	    }
+
+	    lastActive = "";
+
+	    chrome.storage.sync.set({'History': History});
+	});
+
+  }
+  else if(newState == "active") {
+    chrome.tabs.query({ currentWindow: true, active: true }, function(tabs) {
+    	tab = tabs[0];
+      	Activate(tab.url, tab.id);
+    });
+  }
+};
+
+chrome.tabs.onUpdated.addListener(HandleUpdate);
+chrome.tabs.onActivated.addListener(HandleActivated);
+chrome.idle.onStateChanged.addListener(HandleIdle);
+chrome.idle.setDetectionInterval(15);
+>>>>>>> origin/master
 
 chrome.runtime.onInstalled.addListener(function (object) {
    chrome.tabs.create({url: optionsURL}, function (tab) {
