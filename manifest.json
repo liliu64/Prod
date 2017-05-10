@@ -1,6 +1,6 @@
 {
   "name": "Prod",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "manifest_version": 2,
   "description": "Stay Productive",
   "homepage_url": "http://www.cs.princeton.edu/~jmorone/prod",
