@@ -3,7 +3,26 @@ var optionsURL = chrome.runtime.getURL("/src/options/options.html");
 
 var currTab;
 
+/*
 
+  URL: {
+    total: {
+      all: int
+      day: int
+      week: int
+    } 
+    startDate: date
+    alarms:
+      {
+        duration: int
+        type: string
+        per: string
+        enabled: boolean
+      }
+    ]
+  }
+
+*/
 var History = {};
 var lastActive = "";
 

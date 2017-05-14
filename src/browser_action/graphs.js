@@ -10,7 +10,7 @@
 var svg;
 
 /* Creates and draws the pie chart on the page */
-function createPie() {
+function createPie(period) {
 	/* Create the pie chart object */
 	svg = d3.select(".piechart")
 	.append("svg")
@@ -46,13 +46,13 @@ function createPie() {
 
 	var pieSettings = [width, height, radius, pie, arc, outerArc];
 
-	loadPie(svg, pieSettings);
+	loadPie(svg, pieSettings, period);
 }
 
 /* Retrieve data and draw a pie */
-function loadPie(svg, pieSettings) {
+function loadPie(svg, pieSettings, period) {
 	var bgPage = chrome.extension.getBackgroundPage();	// background.js
-	var siteData = bgPage.getData();	// key = url, value = time
+	var siteData = bgPage.getTotals();	// key = url, value = time
 	var usedSites = {}; // sites used to tally time
 	var sites = [];	// site names to use
 
@@ -60,8 +60,9 @@ function loadPie(svg, pieSettings) {
 	// extension pages and new tab page
 	var excluded = ["newtab", chrome.runtime.id, "extensions"];
 
-	// If site information is not long enough (5% of total time), do not include
-	var totalTime = 0.0;
+	// If site information is not long enough, do not include
+	var totalTime = 0.0;	// total time spent on sites
+
 	// Calculate total time spent in browsing session for sites included
 	for (url in siteData) {
 		// Exclude all unwanted sites
@@ -74,14 +75,16 @@ function loadPie(svg, pieSettings) {
 		// Note all wanted urls and calculate total time
 		if (!exclude) {
 			var labelName = bgPage.unWrapDomain(url);
-			labelName += ": " + FormatDuration(siteData[url]);
-			usedSites[labelName] = siteData[url];
-			totalTime = totalTime + siteData[url];
+			if (siteData[url][period] > 0) {
+				labelName += ": " + FormatDuration(siteData[url][period]);
+				usedSites[labelName] = siteData[url][period];
+				totalTime = totalTime + siteData[url][period];
+			}
 		}
 	}
 
 	for (url in usedSites) {
-		var degree = 0.01;	// Threshold for which data is excluded
+		var degree = 0.02;	// Threshold for which data is excluded
 		if (usedSites[url] >= (degree * totalTime)) {
 			sites.push(url);
 		}
