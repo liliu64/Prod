@@ -19,10 +19,14 @@
 }
 
 #message-welcome {
-  font-size: 1.5vw;
+  /*font-size: 1.5vw;*/
   color: black;
-  padding: 2%;
-  width: 80%;
+  /*padding: 2%;*/
+  /*width: 80%;*/
+}
+
+#logistics {
+
 }
 
 h1#prod-title {
@@ -90,9 +94,9 @@ button.btn-action {
 }
 
 .prod-logo {
-  /*width: 17%;*/
-  width: 8em;
-  height: 8em;
+  width: 17%;
+  max-width: 8em;
+  max-height: 8em;
   position: absolute;
   right: 1%;
   top: 0;
