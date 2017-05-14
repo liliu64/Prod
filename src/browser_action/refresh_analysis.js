@@ -32,6 +32,41 @@ function showAll() {
 function loadAll() {
 	displayPeriod = "a"
 	createPie(displayPeriod);
+
+	/* Create a color key for the progress bars */
+	var svg = d3.select('.progress')
+		.append('svg')
+		.attr('height', 30)
+		.attr("id", "Color_Key");
+	
+	svg.append('rect')
+		.attr('x', 0)
+		.attr('y', 0)
+		.attr('fill', '#3ec8f9')
+		.attr('height', 10)
+		.attr('width', 10)
+		.attr('class', 'Color_Key');
+	
+	svg.append('text')
+		.attr('x', 15)
+		.attr('y', 5)
+		.attr("dy", ".35em")
+		.text("= Time Spent Today");
+
+	svg.append('rect')
+		.attr('x', 140)
+		.attr('y', 0)
+		.attr('fill', '#542a20')
+		.attr('height', 10)
+		.attr('width', 10)
+		.attr('class', 'Color_Key');
+
+	svg.append('text')
+		.attr('x', 155)
+		.attr('y', 5)
+		.attr("dy", ".35em")
+		.text("= Time Spent This Week");
+
 	drawBars();
 }
 

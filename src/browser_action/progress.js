@@ -15,7 +15,7 @@ function drawBars() {
 	var allData = bgPage.History;
 
 	for (url in allData) {
-		// newAlarms = {url, [TimeSpent], [TimesOfAlarms], [AlarmTypes], [AlarmPeriod]}
+		// newAlarms holds all alarms for a given URL
 		var newAlarms = {
 			URL: url,
 			TIMES: allData[url].total,
@@ -23,6 +23,7 @@ function drawBars() {
 			ALARM_TYPES: [],
 			ALARM_PERIODS: []
 		};
+
 		// for all alarms for the URL
 		for (alarm in allData[url].alarms) {
 			if ((allData[url].alarms[alarm].duration > 0) && (allData[url].alarms[alarm].enabled)) {
@@ -32,6 +33,7 @@ function drawBars() {
 			}
 		}
 
+		// if there are alarms, create bars
 		if (newAlarms.ALARM_TIMES.length > 0) {
 			barWithFlags(newAlarms);
 			numAlarms += 1;
@@ -49,8 +51,7 @@ function drawBars() {
 
 }
 
-// Create a progress bar given an array of alarms for the same URL
-// alarm = [url, TimeSpent, [TimesOfAlarms], [AlarmTypes]]
+// Create a progress bar given an object containing alarms for the same URL
 function barWithFlags(alarm) {
 	var svg = d3.select('.progress')
 	.append('svg')
@@ -76,6 +77,7 @@ function barWithFlags(alarm) {
     	.text(bgPage.unWrapDomain(alarm.URL))
     	.attr("class", "bar-URLs");
 
+    // Progress rectangle for week
 	var progressWeek = svg.append('rect')
 					.attr('rx', 0)
 					.attr('ry', 0)
@@ -86,7 +88,7 @@ function barWithFlags(alarm) {
 					.attr('width', 0)
 					.attr('class', 'bar');
 
-	// Progress rectangle, colored part of progress bar
+	// Progress rectangle for day
 	var progressDay = svg.append('rect')
 					.attr('rx', 0)
 					.attr('ry', 0)
@@ -107,6 +109,7 @@ function barWithFlags(alarm) {
 		}
 	}
 
+	// Draw week progress
 	progressWeek.transition()
 		.duration(1000)
 		.attr('width', function(){
@@ -114,10 +117,14 @@ function barWithFlags(alarm) {
 				return 500;
 			}
 			else {
-				return 5.0 * (alarm.TIMES.w/longestTime) * 100;
+				if (alarm.TIMES.w == undefined) {
+					return 0;
+				}
+				else return 5.0 * (alarm.TIMES.w/longestTime) * 100;
 			}
 		});
 
+	// Draw day progress
 	progressDay.transition()
 		.duration(1000)
 		.attr('width', function(){
@@ -125,13 +132,17 @@ function barWithFlags(alarm) {
 				return 500;
 			}
 			else {
-				return 5.0 * (alarm.TIMES.d/longestTime) * 100;
+				if (alarm.TIMES.w == undefined) {
+					return 0;
+				}
+				else return 5.0 * (alarm.TIMES.d/longestTime) * 100;
 			}
 		});
 
 
 	// Create text flags for each of the alarms
 	for (flag in alarm.ALARM_TIMES) {
+		// Text for alarm type
 		svg.append('text')
 			.attr("y", 20)
 			.attr("x", function() {
@@ -141,7 +152,19 @@ function barWithFlags(alarm) {
 			})
 			.text(function() {
 				var flagText = "| " + alarm.ALARM_TYPES[flag];		// add alarm type
-				flagText = flagText + ": " + FormatDuration(alarm.ALARM_TIMES[flag]); // add alarm time
+				return flagText;
+			})
+			.attr("class", "bar-flags");
+		// Text for alarm time
+		svg.append('text')
+			.attr("y", 35)
+			.attr("x", function() {
+				var dist = 250;
+				dist = dist + 6 + (5.0 * (alarm.ALARM_TIMES[flag]/longestTime) * 100);
+				return dist;
+			})
+			.text(function() {
+				var flagText = FormatDuration(alarm.ALARM_TIMES[flag]); // add alarm time
 				flagText = flagText + "/";
 				if (alarm.ALARM_PERIODS[flag] == "w") {
 					flagText += "wk";
@@ -150,8 +173,7 @@ function barWithFlags(alarm) {
 					flagText += "day";
 				}
 				return flagText;
-			})
-			.attr("class", "bar-flags");
+			});
 	}
 }
 
