@@ -32,7 +32,8 @@
     "tabs",
     "<all_urls>",
     "idle",
-    "storage"
+    "storage",
+    "alarms"
   ],
   "content_scripts": [
     {
