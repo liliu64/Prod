@@ -7,6 +7,7 @@
  * as well as on the D3 library examples website.
  */
 
+/* Area to which pie chart is appended */
 var svg;
 
 /* Creates and draws the pie chart on the page */
@@ -44,7 +45,15 @@ function createPie(period) {
 		.innerRadius(radius * 0.9)
 		.outerRadius(radius * 0.9);
 
-	var pieSettings = [width, height, radius, pie, arc, outerArc];
+	/* Settings needed to load and draw the pie */
+	var pieSettings = {
+		WIDTH: width,
+		HEIGHT: height,
+		RADIUS: radius,
+		PIE: pie,
+		ARC: arc,
+		OUTER: outerArc
+	};
 
 	loadPie(svg, pieSettings, period);
 }
@@ -83,6 +92,7 @@ function loadPie(svg, pieSettings, period) {
 		}
 	}
 
+	/* Create an array of all the sites in the pie chart */
 	for (url in usedSites) {
 		var degree = 0.02;	// Threshold for which data is excluded
 		if (usedSites[url] >= (degree * totalTime)) {
@@ -90,10 +100,11 @@ function loadPie(svg, pieSettings, period) {
 		}
 	}
 
-	svg.attr("transform", "translate(" + pieSettings[0] / 2 + "," + pieSettings[1] / 2 + ")");
+	svg.attr("transform", "translate(" + pieSettings.WIDTH/2 + "," + pieSettings.HEIGHT/2 + ")");
 
 	var key = function(d){ return d.data.label; };
 
+	/* Color the sites, avoiding having adjacent repeating colors */
 	if ((sites.length % 10 > 0) && (sites.length % 10 < 4)) {
 		var color = d3.scale.category20()
 			.domain(sites);
@@ -102,6 +113,8 @@ function loadPie(svg, pieSettings, period) {
 		var color = d3.scale.category10()
 			.domain(sites);
 	}
+
+	/* Load the data */
 	change(loadData(color, usedSites), color, svg, key, pieSettings);
 }
 
@@ -117,7 +130,7 @@ function loadData (color, usedSites){
 function change(data, color, svg, key, pieSettings) {
 	/* ------- PIE SLICES -------*/
 	var slice = svg.select(".slices").selectAll("path.slice")
-		.data(pieSettings[3](data), key);
+		.data(pieSettings.PIE(data), key);
 
 	slice.enter()
 		.insert("path")
@@ -131,7 +144,7 @@ function change(data, color, svg, key, pieSettings) {
 			var interpolate = d3.interpolate(this._current, d);
 			this._current = interpolate(0);
 			return function(t) {
-				return pieSettings[4](interpolate(t));
+				return pieSettings.ARC(interpolate(t));
 			};
 		})
 
@@ -141,7 +154,7 @@ function change(data, color, svg, key, pieSettings) {
 	/* ------- TEXT LABELS -------*/
 
 	var text = svg.select(".labels").selectAll("text")
-		.data(pieSettings[3](data), key);
+		.data(pieSettings.PIE(data), key);
 
 	text.enter()
 		.append("text")
@@ -162,8 +175,8 @@ function change(data, color, svg, key, pieSettings) {
 			this._current = interpolate(0);
 			return function(t) {
 				var d2 = interpolate(t);
-				var pos = pieSettings[5].centroid(d2);
-				pos[0] = pieSettings[2] * (midAngle(d2) < Math.PI ? 1 : -1);
+				var pos = pieSettings.OUTER.centroid(d2);
+				pos[0] = pieSettings.RADIUS * (midAngle(d2) < Math.PI ? 1 : -1);
 				return "translate("+ pos +")";
 			};
 		})
@@ -183,7 +196,7 @@ function change(data, color, svg, key, pieSettings) {
 	/* ------- SLICE TO TEXT POLYLINES -------*/
 
 	var polyline = svg.select(".lines").selectAll("polyline")
-		.data(pieSettings[3](data), key);
+		.data(pieSettings.PIE(data), key);
 	
 	polyline.enter()
 		.append("polyline");
@@ -195,9 +208,9 @@ function change(data, color, svg, key, pieSettings) {
 			this._current = interpolate(0);
 			return function(t) {
 				var d2 = interpolate(t);
-				var pos = pieSettings[5].centroid(d2);
-				pos[0] = pieSettings[2] * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
-				return [pieSettings[4].centroid(d2), pieSettings[5].centroid(d2), pos];
+				var pos = pieSettings.OUTER.centroid(d2);
+				pos[0] = pieSettings.RADIUS * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
+				return [pieSettings.ARC.centroid(d2), pieSettings.OUTER.centroid(d2), pos];
 			};			
 		});
 	
