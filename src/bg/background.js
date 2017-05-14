@@ -7,9 +7,9 @@ var currTab;
 
   URL: {
     total: {
-      all: int
-      day: int
-      week: int
+      a: int
+      d: int
+      w: int
     } 
     startDate: date
     alarms:
