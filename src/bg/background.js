@@ -44,11 +44,13 @@ function Activate(url, tabId) {
   chrome.storage.sync.get('History', function(data) {
     //Ensure history exists. If it doesn't add starter history with just "*://*.google.com/*"
     if (data['History'] == null) {
-        History = {"*://*.google.com/*": {
+        History = {"*://*.google.com/*": 
+                    {
                       total: {all: 0, day: 0, week: 0},
                       startDate: "",
                       alarms: []
-                    };
+                    } 
+                };
       } else {
         History = data['History'];
       }
@@ -160,10 +162,12 @@ function HandleIdle(newState) {
     //Ensure history exists. If it doesn't add starter history with just "*://*.google.com/*"
     chrome.storage.sync.get('History', function(data) {
 	    if (data['History'] == null) {
-	        History = {"*://*.google.com/*": {
-                      total: {all: 0, day: 0, week: 0},
-                      startDate: "",
-                      alarms: []
+	        History = {"*://*.google.com/*": 
+                      {
+                        total: {all: 0, day: 0, week: 0},
+                        startDate: "",
+                        alarms: []
+                      } 
                     };
 	      } else {
 	        History = data['History'];
