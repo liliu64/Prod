@@ -35,7 +35,7 @@ var scripts = true;
 //Tracking Reset Times
 var midnight = new Date();
 //midnight.setHours(24,0,0,0);
-midnight.setHours(3,51,0,0);
+midnight.setHours(24,00,0,0);
 
 //Cite: https://stackoverflow.com/questions/11789647/setting-day-of-week-in-javascript
 var sundayMidnight = new Date();
@@ -43,7 +43,7 @@ var sunday = 0;
 var currentDay = sundayMidnight.getDay();
 var delta = Math.abs(sunday + 6 - currentDay);
 sundayMidnight.setDate(sundayMidnight.getDate() + delta);
-sundayMidnight.setHours(24,0,0,0);
+sundayMidnight.setHours(24,00,0,0);
 //alert(sundayMidnight.toString())
 //alert(midnight.toString())
 
@@ -236,28 +236,61 @@ function HandleIdle(newState) {
 
 //Reset Timers
 function resetTimers(alarmInfo) {
-  alert("TIMER");
+  //alert("TIMER");
   if(alarmInfo.name === "resetDay"){
-    alert("MIDNIGHT");
+    //alert("MIDNIGHT");
     chrome.storage.sync.get('History', function(data) {
       History = data['History'];
       for (key in History) {
         //console.log(JSON.stringify(key));
         //console.log(JSON.stringify(History[key]));
-        History[key].total.d = 0;
+        History[key].total.d = 0; //Reset Timer
+        
+        //Reenable any disabled functionality
+        for(i in History[key].alarms) {
+          if(History[key].alarms[i].per == "d") {
+            alert(JSON.stringify(History[key].alarms[i]));
+            switch (History[key].alarms[i].type) {
+            case "images":
+              enableImages(key, false);
+              break;
+            case "scripts":
+              enableScripts(key, false);
+              break;
+            default:
+              break;
+            }
+          }
+        }
       }
       chrome.storage.sync.set({'History': History});
     });
   }
   else if(alarmInfo.name === "resetWeek") {
-    alert("SUNDAY_MIDNIGHT");
+    //alert("SUNDAY_MIDNIGHT");
     for (key in History) {
       chrome.storage.sync.get('History', function(data) {
         History = data['History'];
         for (key in History) {
           //console.log(JSON.stringify(key));
           //console.log(JSON.stringify(History[key]));
-          History[key].total.w = 0;
+          History[key].total.w = 0; //Reset Timer
+        
+          //Reenable any disabled functionality
+          for(i in History[key].alarms) {
+            if(History[key].alarms[i].per == "w") {
+              switch (History[key].alarms[i].type) {
+              case "images":
+                enableImages(key, false);
+                break;
+              case "scripts":
+                enableScripts(key, false);
+                break;
+              default:
+                break;
+              }
+            }
+          }
         }
         chrome.storage.sync.set({'History': History});
       });
@@ -269,7 +302,7 @@ function resetTimers(alarmInfo) {
 chrome.tabs.onUpdated.addListener(HandleUpdate);
 chrome.tabs.onActivated.addListener(HandleActivated);
 chrome.idle.onStateChanged.addListener(HandleIdle);
-chrome.idle.setDetectionInterval(15);
+chrome.idle.setDetectionInterval(120);
 chrome.alarms.onAlarm.addListener(resetTimers);
 chrome.runtime.onInstalled.addListener(function (object) {
    chrome.tabs.create({url: optionsURL}, function (tab) {
