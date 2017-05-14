@@ -55,6 +55,7 @@ function createPie(period) {
 		OUTER: outerArc
 	};
 
+	// Draw the pie
 	loadPie(svg, pieSettings, period);
 }
 
@@ -100,6 +101,7 @@ function loadPie(svg, pieSettings, period) {
 		}
 	}
 
+	// If there is no site data yet, write "Not Enough Data Available"
 	if (sites.length == 0) {
 		svg.append('text')
 		.attr("y", pieSettings.HEIGHT/2)
