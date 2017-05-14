@@ -31,7 +31,7 @@ function wrapDomain (domain) {
 }
 
 function unWrapDomain (domain) {
-  return domain.substring(6,domain.length - 2);
+  return domain.replace('*://*.', '').replace('/*', '');
 }
 
 // Old second handler, transfered all flow to Activate
