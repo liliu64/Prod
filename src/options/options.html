@@ -80,23 +80,32 @@ you've spent on the page), disabling images, disabling scripts, and disabling st
 
 							<div class="form-inline row">
 								<label for="URL">per</label>
-								<!-- <input type="text" class="form-control" id="form-etc2" placeholder="d / w"> -->
-								<select class="form-control" id="form-etc2">
+								<select class="form-control" id="form-per">
 									<option value="d">day</option>
 									<option value="w">week</option>
 								</select>
-
 							</div>
 
 							<div class="form-group row">
 								<label for="URL">Action</label>
-								<select class="form-control" id="form-etc">
+								<select class="form-control" id="form-action">
 									<option value="warning">Display warning</option>
 									<option value="scripts">Disable scripts</option>
 									<option value="styles">Disable styles</option>
 									<option value="images">Disable images</option>
 								</select>
 							</div>
+
+							<div class="form-inline row">
+								<label for="URL">Enabled/Disabled</label>
+								<select class="form-control" id="form-enabled">
+									<option value="true" >enabled</option>
+									<option value="false">disabled</option>
+								</select>
+							</div>
+
+
+
 
 							<input type="button" class="btn btn-primary" value="Add new alarm" id="addrow" />
 
@@ -117,6 +126,7 @@ you've spent on the page), disabling images, disabling scripts, and disabling st
 									<th>Duration (ms)</th>
 									<th>Per</th>
 									<th>Action</th>
+									<th>Enabled</th>
 								</tr>
 							</thead>
 <!-- 							<tfoot>
@@ -133,11 +143,11 @@ you've spent on the page), disabling images, disabling scripts, and disabling st
 
 
 					<!-- Etc -->
-					<div class="bhoechie-tab-content">	
+					<!-- <div class="bhoechie-tab-content">	
 						<h2>Prod Control Panel</h2>
 						<div id="root"></div>
 						<script type="text/javascript" src="js/build/static/js/main.8423d8ce.js"></script>
-					</div>
+					</div> -->
 
 				</div>
 			</div>

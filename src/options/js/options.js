@@ -49,49 +49,46 @@ function updateTable() {
 	$('#loadingSpinner').css('visibility', 'visible');
 
 	chrome.storage.sync.get('History', function(data) {
-		var History = {};
+		var History;
 
-  		History = data['History'];
+		if (data['History'] == null) {
+
+  			History = {"*://*.google.com/*": {total: {all: 0, day: 0, week: 0}, 
+  				startDate: "", alarms: [] } };
+  			console.log("Empty History: created new history");
+  		} else {
+  			History = data['History'];
+  		}
 
 		var dataSet = [];
 
 		// Convert History into array format (with 3 values)
 		for (key in History) {
-			var entry = [];
 
-			// Only get urls with nonnull alarm rules
-			if (History[key][2].length == 1 && History[key][2][0] == 0) {
-				continue;
+			// skip if no alarms
+			if (History[key].alarms.length == 0) continue;
+
+			var entry = []; //[URL, Dur, Per, Action, Enabled]
+
+			var alarmsArr = History[key].alarms;
+			var durArr = [];
+			var perArr = [];
+			var typeArr = [];
+			var enabledArr = [];
+
+			for (alarm in alarmsArr) {
+				var anAlarm = alarmsArr[alarm];
+				durArr.push(anAlarm.duration);
+				perArr.push(anAlarm.per);
+				typeArr.push(anAlarm.type);
+				enabledArr.push(anAlarm.enabled);
 			}
 
-			var durationMSarr = History[key][2];
-
-			// Process URL for table: [url, duration array, per, type]
-			// var cleankey = key.substring(6, key.length - 2)
-			var cleankey = key;
-
-			// Remove empty indexes
-			durationMSarr = durationMSarr.filter(function(x) {
-				return x >= 0
-			});
-			var perArr = History[key][4].filter(function(x) {
-				return x != "";
-			});
-			// var perArr = perArr.map(function(x) {
-			// 	if (x == 'd') return "day";
-			// 	if (x == 'w') return "week";
-			// });
-			var actionArr = History[key][3].filter(function(x) {
-				return x != ""
-			});
-
-			// console.log(perArr);
-			entry.push(cleankey, durationMSarr, perArr, actionArr);
+			entry.push(key, durArr, perArr, typeArr, enabledArr);
 
 			dataSet.push(entry);
 		}
 
-		// console.log(dataSet);
 
 		// Update datatable by first erasing it and then re-initializing it
 		$('#example').dataTable().fnClearTable();
@@ -110,9 +107,10 @@ function addRow() {
 	// Form values
 	var newurl = $('#form-url').val();
 	var newalarm = Number($('#form-alarm').val()); //assume ms
-	var newetc = $('#form-etc').val();
-	var newetc2 = $('#form-etc2').val(); //per
-
+	var newper = $('#form-per').val(); 
+	var newaction = $('#form-action').val();
+	var newenabled = $('#form-enabled').val();
+	
 	//Check url from form
 	if (!newurl) {
 		console.log("No URL found!"); //**** put red warning msg
@@ -124,60 +122,45 @@ function addRow() {
 	}
 
 	chrome.storage.sync.get('History', function(data) {
-		var History = {};
+		var History;
 
 		if (data['History'] == null) {
-			var initURL = "google.com";
-			initURL = bgpg.wrapDomain(initURL);
-  			History[initURL] = [0, "", [-1, 60000], ["", "js"], ["", "day"]] ;
+  			History = {"*://*.google.com/*": {total: {all: 0, day: 0, week: 0}, 
+  				startDate: "", alarms: [] } };
   			console.log("Empty History: created new history");
   		} else {
   			History = data['History'];
   		}
   		
-  		// Parse url
+  		// Parse newurl
   		if (newurl.startsWith("www.")) {
   			newurl = newurl.substring(4);
     	}
   		newurl = "https://" + newurl + "/";
   		var domain = newurl.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
-
-    	// Prepare domain to match with History index
-    	// var domain2 = '*://www.'+domain+'/*'
     	domain = bgpg.wrapDomain(domain);
+
+    	// parse newenabled
+    	var boolEnabled;
+    	if (newenabled == "true") boolEnabled = true;
+    	else if (newenabled == "false") boolEnabled = false;
+
+    	// Prepare blob
+    	var blob = {duration: newalarm, type: newaction, per: newper, enabled: boolEnabled};
     	
-   	// Add to History
-    	if (domain in History) { //if this exists in History
-    		var alarmdur = History[domain][2];
-    		var alarmtype = History[domain][3];
-    		var alarmper = History[domain][4];
-    		alarmdur.push(newalarm);
-    		alarmtype.push(newetc);
-    		alarmper.push(newetc2);
-    		History[domain] = [History[domain][0], History[domain][1], alarmdur, alarmtype, alarmper];
-    	}
-    	// else if (domain2 in History) {
-    	// 	var alarmdur = History[domain2][2];
-    	// 	var alarmtype = History[domain2][3];
-    	// 	var alarmper = History[domain2][4];
-    	// 	alarmdur.push(newalarm);
-    	// 	alarmtype.push(newetc);
-    	// 	alarmper.push(newetc2);
-    	// 	History[domain2] = [History[domain2][0], History[domain2][1], alarmdur, alarmtype, alarmper];
-    	// }
-    	else { //if new rule
-    		var alarmdur = [-1];
-    		var alarmtype = [""];
-    		var alarmper = [""];
-    		alarmdur.push(newalarm);
-    		alarmtype.push(newetc);
-    		alarmper.push(newetc2);
-			History[domain] = [0,"", alarmdur, alarmtype, alarmper];
-		}	
+ 		// Add new blob to domain in History
+ 		if (domain in History) {
+ 			// console.log(typeof(History[domain].alarms));
+ 			History[domain].alarms.push(blob);
+ 		}
+ 		else {
+ 			History[domain] = {total: {all: 0, day: 0, week: 0}, startDate: "",
+         	alarms: [blob] };
+      }
 
   		// Change addmsg in html
   		var addmsg = "New URL added. [URL: " + domain + ", Duration (ms): " + newalarm +
-  		" per " + newetc2 +  ", Action: " + newetc + "]";
+  		" per " + newper +  ", Action: " + newaction + ". This is " + newenabled + " ]";
 		$('#addmsg').html(addmsg);
 		$('#addmsg').css('visibility', 'visible');
 
@@ -202,14 +185,14 @@ function deleteRow() {
 		for (i = 0; i < length; i++) {
 			// Get url
 			var domain = todelete[i][0];
-			domain = bgpg.wrapDomain(domain);
+			// domain = bgpg.wrapDomain(domain);
 			
 			if (domain in History) {
 				// re-enable images and scripts for selected urls to delete
 				bgpg.enableImages(domain, false);
 				bgpg.enableScripts(domain, false);
 				// delete History[domain];
-				History[domain] = [History[domain][0], History[domain][1], [0], [""], [""]];
+				History[domain].alarms = [];
 			}
 			else 
 				console.log("Cannot delete: domain not found in History");
