@@ -47,13 +47,9 @@ sundayMidnight.setHours(24,00,0,0);
 //alert(sundayMidnight.toString())
 //alert(midnight.toString())
 
-//example of using a message handler from the inject scripts
-chrome.extension.onMessage.addListener(
-  function(request, sender, sendResponse) {
-  	chrome.pageAction.show(sender.tab.id);
-    sendResponse();
-  });
-
+/*
+  Return the total time spent on each page, for visualization
+*/
 function getTotals() {
 	var output = {};
 	for (key in History) {
@@ -62,20 +58,34 @@ function getTotals() {
 	return output;
 }
 
+/*
+  Given a bare domain, return a proper Chrome match Pattern
+*/
 function wrapDomain (domain) {
   return '*://*.'+domain+'/*';
 }
 
+/*
+  Given a proper Chrome match Pattern, return a bare domain
+*/
 function unWrapDomain (domain) {
   return domain.replace('*://*.', '').replace('/*', '');
 }
 
+/*
+  Incremement the time spent on a website <urlObj> by <amount> (in ms). 
+*/
 function incrementTotals (urlObj, amount) {
   urlObj.total.a += amount;
   urlObj.total.d += amount;
   urlObj.total.w += amount;
 }
 
+/*
+  Handler for when pages are made active through any mean. Stop tracking the last active
+  page time, start tracking the new active page time, check for any expired alarms
+  on the current active page time and take any actions with them if needed
+*/
 function Activate(url, tabId) {
   chrome.storage.sync.get('History', function(data) {
     //Ensure history exists. If it doesn't add starter history with just "*://*.google.com/*"
@@ -120,7 +130,7 @@ function Activate(url, tabId) {
 
       var website = unWrapDomain (domain);
 
-      
+      //Get the alarm with largest time
       var maxIndex = -1;
       var maxHours = 0; 
       for (var i = 0; i < History[domain].alarms.length; i++) {
@@ -148,6 +158,7 @@ function Activate(url, tabId) {
        		period = 'week'
        	} else period = 'day';
 
+        //Trigger overlay and enforce any alarm actions
         switch (currAlarm.type) {
         case "warning":
           triggerOverlay(currAlarm.type,website, FormatDuration(time), period);
@@ -177,12 +188,18 @@ function Activate(url, tabId) {
   } );
 }
 
+/*
+  Handle the tab being changed
+*/
 function HandleUpdate(tabId, changeInfo, tab) {
 	if (changeInfo.status == 'complete'){
     Activate(tab.url, tabId); 
   }
 }
 
+/*
+  Handle the current tab being brought back into focus
+*/
 function HandleActivated(activeInfo) {
 	var tabId = activeInfo.tabId;
 	var url;
@@ -192,6 +209,9 @@ function HandleActivated(activeInfo) {
 	});
 }
 
+/*
+  Handle idle state transitions (user inactive or computer turned off/asleep)
+*/
 function HandleIdle(newState) {
   if(newState == "locked" || newState == "idle") {
     //stop tracking time (used bug proof form, stop all tracking)
@@ -335,6 +355,7 @@ function setCurrentPagePermission(feature, setting) {
   });
 }
 
+//Functions that enforce rules
 function setPagePermission(matchPattern, feature, setting, reload) {  
   feature.set({
     'primaryPattern': matchPattern,
@@ -381,7 +402,7 @@ function popup(){
   window.open("popup.html");
 }
 
-/*
+/* //Debug Toggles
 function toggleScripts(){
   if(scripts) disableScripts();
   else       enableScripts();
