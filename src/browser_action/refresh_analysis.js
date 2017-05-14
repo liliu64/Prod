@@ -37,6 +37,7 @@ function loadAll() {
 
 /* Refresh the pie chart on the analytics page */
 function refreshPie() {
+	d3.select("#No_Data").remove();
 	for (i = 0; i < 2; i++) {
 		d3.select("#Pie_Chart").remove();
 	}
@@ -45,6 +46,7 @@ function refreshPie() {
 
 /* Refresh the progress bars on the analytics page */
 function refreshBars() {
+	d3.select("#No_Alarms").remove();
 	for (i = 0; i < numAlarms; i++) {
 		d3.select("#Alarm_Progress").remove();
 	}

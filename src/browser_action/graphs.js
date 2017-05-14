@@ -100,6 +100,16 @@ function loadPie(svg, pieSettings, period) {
 		}
 	}
 
+	if (sites.length == 0) {
+		svg.append('text')
+		.attr("y", pieSettings.HEIGHT/2)
+		.attr("x", pieSettings.WIDTH/2)
+    	.attr("dy", ".35em")
+    	.text("Not Enough Data Available")
+    	.attr("id", "No_Data");
+    	return;
+	}
+
 	svg.attr("transform", "translate(" + pieSettings.WIDTH/2 + "," + pieSettings.HEIGHT/2 + ")");
 
 	var key = function(d){ return d.data.label; };

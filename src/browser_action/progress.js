@@ -36,6 +36,15 @@ function drawBars() {
 			barWithFlags(newAlarms);
 			numAlarms += 1;
 		}
+
+		if (numAlarms == 0) {
+			var svg = d3.select('.progress')
+			.append('text')
+    		.attr("dy", ".35em")
+    		.text("No Alarms Set")
+    		.attr("id", "No_Alarms");
+    		return;
+		}
 	}
 
 }
