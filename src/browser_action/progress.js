@@ -44,7 +44,7 @@ function drawBars() {
 			var svg = d3.select('.progress')
 			.append('text')
     		.attr("dy", ".35em")
-    		.text("No Alarms Set")
+    		.text("No alarms set")
     		.attr("id", "No_Alarms");
     		return;
 		}

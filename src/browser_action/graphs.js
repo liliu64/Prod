@@ -101,13 +101,13 @@ function loadPie(svg, pieSettings, period) {
 		}
 	}
 
-	// If there is no site data yet, write "Not Enough Data Available"
+	// If there is no site data yet, write message
 	if (sites.length == 0) {
 		svg.append('text')
 		.attr("y", pieSettings.HEIGHT/2)
 		.attr("x", pieSettings.WIDTH/2)
     	.attr("dy", ".35em")
-    	.text("Not Enough Data Available")
+    	.text("No sites visited since Prod was installed")
     	.attr("id", "No_Data");
     	return;
 	}
