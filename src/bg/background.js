@@ -34,46 +34,11 @@ function unWrapDomain (domain) {
   return domain.replace('*://*.', '').replace('/*', '');
 }
 
-// Old second handler, transfered all flow to Activate
-// function Update(date, tabId, url) {
-  
-//   	chrome.storage.sync.get('History', function(data) {
-//   		if (data['History'] == null) {
-//   			History = {"*://www.google.com/*": [0, "", [0], [""]]};
-//   		} else {
-//   			History = data['History'];
-//   		}
-  		
-// 	    if (!url) {
-// 	    	return;
-// 	    }
-// 	  	if (date != "") {
-// 		  var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
-// 		  domain = '*://'+domain+'/*';
-// 		  if (domain in History) {
-// 		    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
-// 		    History[domain][1] = date.toJSON();
-// 		  } else {
-// 		    History[domain] = [0,date.toJSON(),0, ""];
-// 		  }
-// 		} else {
-// 			date = new Date();
-// 			var domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
-// 			domain = '*://'+domain+'/*';
-// 		    if (domain in History) {
-// 			    History[domain][0] += date.getTime() - new Date(History[domain][1]).getTime();
-// 			    History[domain][1] = "";
-// 			}
-// 		}
-// 		chrome.storage.sync.set({'History': History});
-// 	} );
-	
-// }
-
 function Activate(url, tabId) {
   chrome.storage.sync.get('History', function(data) {
+    //Ensure history exists. If it doesn't add starter history with just "*://*.google.com/*"
     if (data['History'] == null) {
-        History = {"*://google.com/*": [0, "", [0], [""], [""]]};
+        History = {"*://*.google.com/*": [0, "", [0], [""], [""]]};
       } else {
         History = data['History'];
       }
@@ -183,9 +148,11 @@ function HandleActivated(activeInfo) {
 function HandleIdle(newState) {
   if(newState == "locked" || newState == "idle") {
     //stop tracking time (used bug proof form, stop all tracking)
+    
+    //Ensure history exists. If it doesn't add starter history with just "*://*.google.com/*"
     chrome.storage.sync.get('History', function(data) {
 	    if (data['History'] == null) {
-	        History = {"*://google.com/*": [0, "", [0], [""], [""]]};
+	        History = {"*://*.google.com/*": [0, "", [0], [""], [""]]};
 	      } else {
 	        History = data['History'];
 	      }
