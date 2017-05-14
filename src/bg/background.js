@@ -92,7 +92,7 @@ function Activate(url, tabId) {
         var time = currAlarm.duration;
         if (time > 0 && currAlarm.enabled) {
           //60000 ms per minute
-          if (History[domain].total.(currAlarm.per) > time) {
+          if (History[domain].total.currAlarm.per > time) {
             var hours = time / (60 * 60 * 1000);
             if (hours > maxHours) {
               maxIndex = i;
