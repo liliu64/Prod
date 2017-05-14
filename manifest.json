@@ -2,7 +2,9 @@
   "name": "Prod",
   "version": "0.0.5",
   "manifest_version": 2,
-  "description": "Stay Productive",
+  "description": "Stay Productive: Keep track of the time you spend on websites, \
+                  set alarms to warn you of wasting too much time on certain sites, \
+                  and disable features to motivate you to get back to work",
   "homepage_url": "http://www.cs.princeton.edu/~jmorone/prod",
   "content_security_policy": "script-src 'self' https://d3js.org; object-src 'self'",
   "icons": {
