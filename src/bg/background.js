@@ -34,12 +34,18 @@ function unWrapDomain (domain) {
   return domain.replace('*://*.', '').replace('/*', '');
 }
 
+funtion incrementTotals (urlObj, amount) {
+  urlObj.total.all += amount;
+  urlObj.total.day += amount;
+  urlObj.total.week += amount;
+}
+
 function Activate(url, tabId) {
   chrome.storage.sync.get('History', function(data) {
     //Ensure history exists. If it doesn't add starter history with just "*://*.google.com/*"
     if (data['History'] == null) {
         History = {"*://*.google.com/*": {
-                      total: 0,
+                      total: {all: 0, day: 0, week: 0},
                       startDate: "",
                       alarms: []
                     };
@@ -58,7 +64,7 @@ function Activate(url, tabId) {
     // bug catcher 
     for (key in History) {
       if (History[key].startDate != "") {
-        History[key].total += date.getTime() - new Date(History[key].startDate).getTime();
+        incrementTotals(History[key], date.getTime() - new Date(History[key].startDate).getTime());
         History[key].startDate = "";
       }
     }
@@ -68,7 +74,7 @@ function Activate(url, tabId) {
       if (domain in History) {
       	History[domain].startDate = date.toJSON();
       } else {
-        History[domain] = { total: 0,
+        History[domain] = { total: {all: 0, day: 0, week: 0},
                             startDate: date.toJSON(),
                             alarms: []
                           };
@@ -84,7 +90,7 @@ function Activate(url, tabId) {
         var time = currAlarm.duration;
         if (time > 0 && currAlarm.enabled) {
           //60000 ms per minute
-          if (History[domain].total > time) {
+          if (History[domain].total.(currAlarm.per) > time) {
             var hours = time / (60 * 60 * 1000);
             if (hours > maxHours) {
               maxIndex = i;
@@ -155,7 +161,7 @@ function HandleIdle(newState) {
     chrome.storage.sync.get('History', function(data) {
 	    if (data['History'] == null) {
 	        History = {"*://*.google.com/*": {
-                      total: 0,
+                      total: {all: 0, day: 0, week: 0},
                       startDate: "",
                       alarms: []
                     };
@@ -168,7 +174,7 @@ function HandleIdle(newState) {
 
 	    for (key in History) {
 	      if (History[key].startDate != "") {
-	        History[key].total += date.getTime() - new Date(History[key].startDate).getTime();
+	        incrementTotals(History[key], date.getTime() - new Date(History[key].startDate).getTime());
 	        History[key].startDate = "";
 	      }
 	    }
