@@ -11,6 +11,13 @@ var styles = true;
 var images = true;
 var scripts = true;
 
+//Data structure constants
+var PER  = 4;
+var TYPE = 3;
+var DUR  = 2;
+var DATE = 1;
+var TOTAL = 0;
+
 //example of using a message handler from the inject scripts
 chrome.extension.onMessage.addListener(
   function(request, sender, sendResponse) {
@@ -18,10 +25,10 @@ chrome.extension.onMessage.addListener(
     sendResponse();
   });
 
-function getTotals() {
+function getData() {
 	var output = {};
 	for (key in History) {
-		output[key] = History[key].total;
+		output[key] = History[key][0];
 	}
 	return output;
 }
@@ -38,11 +45,7 @@ function Activate(url, tabId) {
   chrome.storage.sync.get('History', function(data) {
     //Ensure history exists. If it doesn't add starter history with just "*://*.google.com/*"
     if (data['History'] == null) {
-        History = {"*://*.google.com/*": {
-                      total: 0,
-                      startDate: "",
-                      alarms: []
-                    };
+        History = {"*://*.google.com/*": [0, "", [0], [""], [""]]};
       } else {
         History = data['History'];
       }
@@ -57,21 +60,18 @@ function Activate(url, tabId) {
 
     // bug catcher 
     for (key in History) {
-      if (History[key].startDate != "") {
-        History[key].total += date.getTime() - new Date(History[key].startDate).getTime();
-        History[key].startDate = "";
+      if (History[key][1] != "") {
+        History[key][0] += date.getTime() - new Date(History[key][1]).getTime();
+        History[key][1] = "";
       }
     }
 
 
     lastActive = domain;
       if (domain in History) {
-      	History[domain].startDate = date.toJSON();
+      	History[domain][1] = date.toJSON();
       } else {
-        History[domain] = { total: 0,
-                            startDate: date.toJSON(),
-                            alarms: []
-                          };
+        History[domain] = [0,date.toJSON(),[0], [""], [""]];
       }
 
       var website = unWrapDomain (domain);
@@ -79,12 +79,11 @@ function Activate(url, tabId) {
       
       var maxIndex = -1;
       var maxHours = 0; 
-      for (var i = 0; i < History[domain].alarms.length; i++) {
-        currAlarm = History[domain].alarms[i];
-        var time = currAlarm.duration;
-        if (time > 0 && currAlarm.enabled) {
+      for (var i = 0; i < History[domain][2].length; i++) {
+        var time = History[domain][2][i];
+        if (time > 0) {
           //60000 ms per minute
-          if (History[domain].total > time) {
+          if (History[domain][0] > time) {
             var hours = time / (60 * 60 * 1000);
             if (hours > maxHours) {
               maxIndex = i;
@@ -95,38 +94,44 @@ function Activate(url, tabId) {
       }
       if (maxIndex != -1) {
         var i = maxIndex;
-        currAlarm = History[domain].alarms[i];
-        var time = currAlarm.duration;
+        var time = History[domain][2][i];
 
         var period = "";
-       	if (currAlarm.per == 'w') {
+       	if (History[domain][4][i] == 'w') {
        		period = 'week'
        	} else period = 'day';
 
-        switch (currAlarm.type) {
+        switch (History[domain][3][i]) {
         case "warning":
-          triggerOverlay(currAlarm.type,website, FormatDuration(time), period);
+          triggerOverlay(History[domain][3][i],website, FormatDuration(time), period);
           break;
         case "images":
           chrome.contentSettings.images.get({primaryUrl: url}, function (details) {
             if(details.setting == 'allow') disableImages(domain, true);
-            else triggerOverlay(currAlarm.type,website, FormatDuration(time), period);
+            else triggerOverlay(History[domain][3][i],website, FormatDuration(time), period);
           });
           break;
         case "scripts":
           chrome.contentSettings.javascript.get({primaryUrl: url}, function (details) {
             if(details.setting == 'allow') disableScripts(domain, true);
-            else triggerOverlay(currAlarm.type,website, FormatDuration(time), period);
+            else triggerOverlay(History[domain][3][i],website, FormatDuration(time), period);
           });
           break;
         case "styles":
           disableStyles(tabId, 
-          triggerOverlay(currAlarm.type,website, FormatDuration(time), period));
+          triggerOverlay(History[domain][3][i],website, FormatDuration(time), period));
           break;
         default:
           break;
       	}   
       }
+
+      // Non array version of alarms
+      // if (History[domain][2] > 0) {
+      // 	if (History[domain][0] > 60000 * History[domain][2]) {
+       //  	triggerOverlay(History[domain][3],website, History[domain][2].toString() + ' minutes');
+       //  }
+      // }
 
       chrome.storage.sync.set({'History': History});
   } );
@@ -154,11 +159,7 @@ function HandleIdle(newState) {
     //Ensure history exists. If it doesn't add starter history with just "*://*.google.com/*"
     chrome.storage.sync.get('History', function(data) {
 	    if (data['History'] == null) {
-	        History = {"*://*.google.com/*": {
-                      total: 0,
-                      startDate: "",
-                      alarms: []
-                    };
+	        History = {"*://*.google.com/*": [0, "", [0], [""], [""]]};
 	      } else {
 	        History = data['History'];
 	      }
@@ -167,9 +168,9 @@ function HandleIdle(newState) {
 	    var date = new Date();
 
 	    for (key in History) {
-	      if (History[key].startDate != "") {
-	        History[key].total += date.getTime() - new Date(History[key].startDate).getTime();
-	        History[key].startDate = "";
+	      if (History[key][1] != "") {
+	        History[key][0] += date.getTime() - new Date(History[key][1]).getTime();
+	        History[key][1] = "";
 	      }
 	    }
 
