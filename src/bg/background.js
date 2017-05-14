@@ -26,9 +26,26 @@ var currTab;
 var History = {};
 var lastActive = "";
 
+/* Legacy Debug Code: here for debugging
 var styles = true;
 var images = true;
 var scripts = true;
+*/
+
+//Tracking Reset Times
+var midnight = new Date();
+//midnight.setHours(24,0,0,0);
+midnight.setHours(3,51,0,0);
+
+//Cite: https://stackoverflow.com/questions/11789647/setting-day-of-week-in-javascript
+var sundayMidnight = new Date();
+var sunday = 0;
+var currentDay = sundayMidnight.getDay();
+var delta = Math.abs(sunday + 6 - currentDay);
+sundayMidnight.setDate(sundayMidnight.getDate() + delta);
+sundayMidnight.setHours(24,0,0,0);
+//alert(sundayMidnight.toString())
+//alert(midnight.toString())
 
 //example of using a message handler from the inject scripts
 chrome.extension.onMessage.addListener(
@@ -109,9 +126,10 @@ function Activate(url, tabId) {
       for (var i = 0; i < History[domain].alarms.length; i++) {
         currAlarm = History[domain].alarms[i];
         var time = currAlarm.duration;
+        var per = currAlarm.per
         if (time > 0 && currAlarm.enabled) {
           //60000 ms per minute
-          if (History[domain].total.currAlarm.per > time) {
+          if (History[domain].total[currAlarm.per] > time) {
             var hours = time / (60 * 60 * 1000);
             if (hours > maxHours) {
               maxIndex = i;
@@ -216,15 +234,54 @@ function HandleIdle(newState) {
   }
 };
 
+//Reset Timers
+function resetTimers(alarmInfo) {
+  alert("TIMER");
+  if(alarmInfo.name === "resetDay"){
+    alert("MIDNIGHT");
+    chrome.storage.sync.get('History', function(data) {
+      History = data['History'];
+      for (key in History) {
+        //console.log(JSON.stringify(key));
+        //console.log(JSON.stringify(History[key]));
+        History[key].total.d = 0;
+      }
+      chrome.storage.sync.set({'History': History});
+    });
+  }
+  else if(alarmInfo.name === "resetWeek") {
+    alert("SUNDAY_MIDNIGHT");
+    for (key in History) {
+      chrome.storage.sync.get('History', function(data) {
+        History = data['History'];
+        for (key in History) {
+          //console.log(JSON.stringify(key));
+          //console.log(JSON.stringify(History[key]));
+          History[key].total.w = 0;
+        }
+        chrome.storage.sync.set({'History': History});
+      });
+    }
+  }
+}
+
+//Event Listeners
 chrome.tabs.onUpdated.addListener(HandleUpdate);
 chrome.tabs.onActivated.addListener(HandleActivated);
 chrome.idle.onStateChanged.addListener(HandleIdle);
 chrome.idle.setDetectionInterval(15);
-
+chrome.alarms.onAlarm.addListener(resetTimers);
 chrome.runtime.onInstalled.addListener(function (object) {
    chrome.tabs.create({url: optionsURL}, function (tab) {
    });
 });
+
+//Alarms (for resetting totals)
+chrome.alarms.create("resetDay", {
+       when: midnight.valueOf(), periodInMinutes: 1440});
+       
+chrome.alarms.create("resetWeek", {
+       when: sundayMidnight.valueOf(), periodInMinutes: 10080});
 
 function reloadCurrentTab() {  
   chrome.tabs.reload();
@@ -236,7 +293,7 @@ function setCurrentPagePermission(feature, setting) {
     var domain = currTab.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
     if (domain.substring(0,4) == 'www.') domain = domain.substring(4,domain.length);
     domain = '*://'+domain+'/*';
-    alert(domain);
+    //alert(domain);
     feature.set({
       'primaryPattern': domain,
       'setting': setting
@@ -338,13 +395,3 @@ function triggerWarning(){
         triggerOverlay('warning', domain, '9 hours', 'day');
   });
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-    /*document.getElementById('toggleJS').onclick = toggleScripts;
-    document.getElementById('toggleIMG').onclick = toggleImages;
-    document.getElementById('toggleStyles').onclick = toggleStyles; */
-    document.getElementById('timeData').onclick = popup;
-    document.getElementById('openAnalytics').onclick = openAnalytics;
-    document.getElementById('openOptions').onclick = openOptions;
-    document.getElementById('triggerWarning').onclick = triggerWarning;
-});
