@@ -389,7 +389,7 @@ function disableStyles(tabID, callback = null){
   });
 }
 
-function enableStyles(tabID, callback){
+function enableStyles(tabID, callback = null){
   chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
     chrome.tabs.sendMessage(tabID, {command: 'modify_styles', setting: 'enable'}, 
     function(response) {
