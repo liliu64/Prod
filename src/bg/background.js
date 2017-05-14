@@ -34,7 +34,7 @@ function unWrapDomain (domain) {
   return domain.replace('*://*.', '').replace('/*', '');
 }
 
-funtion incrementTotals (urlObj, amount) {
+function incrementTotals (urlObj, amount) {
   urlObj.total.all += amount;
   urlObj.total.day += amount;
   urlObj.total.week += amount;
