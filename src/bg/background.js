@@ -35,9 +35,9 @@ function unWrapDomain (domain) {
 }
 
 function incrementTotals (urlObj, amount) {
-  urlObj.total.all += amount;
-  urlObj.total.day += amount;
-  urlObj.total.week += amount;
+  urlObj.total.a += amount;
+  urlObj.total.d += amount;
+  urlObj.total.w += amount;
 }
 
 function Activate(url, tabId) {
@@ -46,7 +46,7 @@ function Activate(url, tabId) {
     if (data['History'] == null) {
         History = {"*://*.google.com/*": 
                     {
-                      total: {all: 0, day: 0, week: 0},
+                      total: {a: 0, d: 0, w: 0},
                       startDate: "",
                       alarms: []
                     } 
@@ -76,7 +76,7 @@ function Activate(url, tabId) {
       if (domain in History) {
       	History[domain].startDate = date.toJSON();
       } else {
-        History[domain] = { total: {all: 0, day: 0, week: 0},
+        History[domain] = { total: {a: 0, d: 0, w: 0},
                             startDate: date.toJSON(),
                             alarms: []
                           };
@@ -164,7 +164,7 @@ function HandleIdle(newState) {
 	    if (data['History'] == null) {
 	        History = {"*://*.google.com/*": 
                       {
-                        total: {all: 0, day: 0, week: 0},
+                        total: {a: 0, d: 0, w: 0},
                         startDate: "",
                         alarms: []
                       } 
