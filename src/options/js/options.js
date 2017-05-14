@@ -191,6 +191,7 @@ function deleteRow() {
 				// re-enable images and scripts for selected urls to delete
 				bgpg.enableImages(domain, false);
 				bgpg.enableScripts(domain, false);
+				bgpg.enableStyles(domain, false);
 				// delete History[domain];
 				History[domain].alarms = [];
 			}
