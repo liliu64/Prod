@@ -64,27 +64,23 @@ function updateTable() {
 				continue;
 			}
 
-			// Reconvert alarm duration from ms to min
-			var durationMSarr = History[key][2].map(function(x) {
-				return x / 60000;
-			});
-			
+			var durationMSarr = History[key][2];
 
 			// Process URL for table: [url, duration array, per, type]
-			var cleankey = key.substring(6, key.length - 2)
+			// var cleankey = key.substring(6, key.length - 2)
+			var cleankey = key;
 
 			// Remove empty indexes
 			durationMSarr = durationMSarr.filter(function(x) {
-				return x != 0
+				return x >= 0
 			});
 			var perArr = History[key][4].filter(function(x) {
 				return x != "";
 			});
-			var perArr = perArr.map(function(x) {
-				if (x == 'd') return "day";
-				if (x == 'w') return "week";
-			});
-
+			// var perArr = perArr.map(function(x) {
+			// 	if (x == 'd') return "day";
+			// 	if (x == 'w') return "week";
+			// });
 			var actionArr = History[key][3].filter(function(x) {
 				return x != ""
 			});
@@ -113,12 +109,9 @@ function updateTable() {
 function addRow() {
 	// Form values
 	var newurl = $('#form-url').val();
-	var newalarm = Number($('#form-alarm').val()); //assume minutes
+	var newalarm = Number($('#form-alarm').val()); //assume ms
 	var newetc = $('#form-etc').val();
 	var newetc2 = $('#form-etc2').val(); //per
-
-	// Convert alarm duration from mins to ms
-	newalarm = newalarm * 60000;
 
 	//Check url from form
 	if (!newurl) {
@@ -131,10 +124,12 @@ function addRow() {
 	}
 
 	chrome.storage.sync.get('History', function(data) {
-		var History;
+		var History = {};
 
 		if (data['History'] == null) {
-  			History = {"*://google.com/*": [0, "", [0], [""], [""]]};
+			var initURL = "google.com";
+			initURL = bgpg.wrapDomain(initURL);
+  			History[initURL] = [0, "", [-1, 60000], ["", "js"], ["", "day"]] ;
   			console.log("Empty History: created new history");
   		} else {
   			History = data['History'];
@@ -171,7 +166,7 @@ function addRow() {
     	// 	History[domain2] = [History[domain2][0], History[domain2][1], alarmdur, alarmtype, alarmper];
     	// }
     	else { //if new rule
-    		var alarmdur = [0];
+    		var alarmdur = [-1];
     		var alarmtype = [""];
     		var alarmper = [""];
     		alarmdur.push(newalarm);
