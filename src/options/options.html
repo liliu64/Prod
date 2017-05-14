@@ -22,6 +22,9 @@
 	<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css" />
   <link rel="stylesheet" type="text/css" href="../../css/prod.css">
 
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+
 	
 
 
@@ -29,10 +32,10 @@
 
 <body class = "prod-page">
 <div id = "message-welcome">
-Welcome to Prod! This is your Prod Control Panel. Here you can set, modify, and delete
+<!-- Welcome to Prod! This is your Prod Control Panel. Here you can set, modify, and delete
 alarms to help keep yourself on track and productive. Currently supported alarm actions are
 warnings (page is not affected, but an overlay will alert you on how much time
-you've spent on the page), disabling images, disabling scripts, and disabling styles.
+you've spent on the page), disabling images, disabling scripts, and disabling styles. -->
 
 <img class = 'prod-logo' src="../../img/ProdLogo.png">
 
@@ -50,9 +53,13 @@ you've spent on the page), disabling images, disabling scripts, and disabling st
 							Old Panel
 						</a>
 						<a href="#" class="list-group-item text-center">
+							<i class="material-icons">alarm</i>
+							<br/>
 							Control Panel
 						</a>
 						<a href="#" class="list-group-item text-center">
+							<i class="material-icons">info</i>
+							<br/>
 							Info
 						</a>						
 					</div>
@@ -139,14 +146,23 @@ you've spent on the page), disabling images, disabling scripts, and disabling st
 					<!-- Tab 2 content -->
 					<div class="bhoechie-tab-content">	
 						<h3 style="text-align: left">Prod Control Panel</h3>
-						<br/>
+						<hr>
 						<div id="root"></div>
-						<script type="text/javascript" src="js/build/static/js/main.0f200dab.js"></script>
+						<script type="text/javascript" src="js/build/static/js/main.aa76e839.js"></script>
 					</div>
 
 					<!-- Tab 3 content -->
 					<div class="bhoechie-tab-content">	
 						<h3 style="text-align: left">Info</h3>
+						<hr>
+
+						<div id = "message-welcome">
+							Welcome to Prod! This is your Prod Control Panel. Here you can set, modify, and delete
+							alarms to help keep yourself on track and productive. Currently supported alarm actions are
+							warnings (page is not affected, but an overlay will alert you on how much time
+							you've spent on the page), disabling images, disabling scripts, and disabling styles.
+						</div>
+						
 					</div>					
 
 				</div>
