@@ -269,7 +269,7 @@ function resetTimers(alarmInfo) {
         //Reenable any disabled functionality
         for(i in History[key].alarms) {
           if(History[key].alarms[i].per == "d") {
-            alert(JSON.stringify(History[key].alarms[i]));
+            //alert(JSON.stringify(History[key].alarms[i]));
             switch (History[key].alarms[i].type) {
             case "images":
               enableImages(key, false);
