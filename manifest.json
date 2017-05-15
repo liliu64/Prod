@@ -1,8 +1,8 @@
 {
   "name": "Prod",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "manifest_version": 2,
-  "description": "Stay Productive: Ttrack the time you spend browsing and set alarms to warn you of wasting too much time on sites.",
+  "description": "Stay Productive: Track the time you spend browsing and set alarms to warn you of wasting too much time on specific sites.",
   "homepage_url": "http://www.cs.princeton.edu/~jmorone/prod",
   "content_security_policy": "script-src 'self' https://d3js.org; object-src 'self'",
   "icons": {
