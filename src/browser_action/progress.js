@@ -37,19 +37,18 @@ function drawBars() {
 		if (newAlarms.ALARM_TIMES.length > 0) {
 			barWithFlags(newAlarms);
 			numAlarms += 1;
-		}
-
-		// if there are no alarms, write "No Alarms Set"
-		if (numAlarms == 0) {
-			var svg = d3.select('.progress')
-			.append('text')
-    		.attr("dy", ".35em")
-    		.text("No alarms set")
-    		.attr("id", "No_Alarms");
-    		return;
-		}
+		}	
 	}
 
+	// if there are no alarms, write "No Alarms Set"
+	if (numAlarms == 0) {
+		var svg = d3.select('.progress')
+		.append('text')
+		.attr("dy", ".35em")
+		.text("No alarms set")
+		.attr("id", "No_Alarms");
+		return;
+	}
 }
 
 // Create a progress bar given an object containing alarms for the same URL
