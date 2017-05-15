@@ -53,7 +53,7 @@ function updateTable() {
 
 		if (data['History'] == null) {
 
-  			History = {"*://*.google.com/*": {total: {all: 0, day: 0, week: 0}, 
+  			History = {"*://*.google.com/*": {total: {a: 0, d: 0, w: 0}, 
   				startDate: "", alarms: [] } };
   			console.log("Empty History: created new history");
   		} else {
@@ -125,7 +125,7 @@ function addRow() {
 		var History;
 
 		if (data['History'] == null) {
-  			History = {"*://*.google.com/*": {total: {all: 0, day: 0, week: 0}, 
+  			History = {"*://*.google.com/*": {total: {a: 0, d: 0, w: 0}, 
   				startDate: "", alarms: [] } };
   			console.log("Empty History: created new history");
   		} else {
@@ -154,7 +154,7 @@ function addRow() {
  			History[domain].alarms.push(blob);
  		}
  		else {
- 			History[domain] = {total: {all: 0, day: 0, week: 0}, startDate: "",
+ 			History[domain] = {total: {a: 0, d: 0, w: 0}, startDate: "",
          	alarms: [blob] };
       }
 
