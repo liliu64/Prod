@@ -1,6 +1,6 @@
 /*
- * Code from sarahob was used as the template for this progress bar
- * implementation and was adjusted to meet the needs of this project.
+ * Code from sarahob was used as the template to learn how to draw
+ * rectangles for progress bars.
  * sarahob's code can be found at
  * gist.github.com/sarahob/1e291c95c4169ddabb77bbd10b6a7ef7
  * as well as on the opensource D3 library examples website.
@@ -55,7 +55,7 @@ function drawBars() {
 function barWithFlags(alarm) {
 	var svg = d3.select('.progress')
 	.append('svg')
-	.attr('height', 50)
+	.attr('height', '100%')
 	.attr("id", "Alarm_Progress");
 
 	// Background rectangle, background of progress bar
@@ -132,7 +132,7 @@ function barWithFlags(alarm) {
 				return 500;
 			}
 			else {
-				if (alarm.TIMES.w == undefined) {
+				if (alarm.TIMES.d == undefined) {
 					return 0;
 				}
 				else return 5.0 * (alarm.TIMES.d/longestTime) * 100;
@@ -142,9 +142,19 @@ function barWithFlags(alarm) {
 
 	// Create text flags for each of the alarms
 	for (flag in alarm.ALARM_TIMES) {
+
+		// If text flag already set for same time, adjust height of flag
+		var sameTime = 0;	// number alarms previously set to this time
+		for (flag2 in alarm.ALARM_TIMES) {
+			if ((alarm.ALARM_TIMES[flag] == alarm.ALARM_TIMES[flag2])
+				&& (flag > flag2)) {
+				sameTime += 1;
+			}
+		}
+
 		// Text for alarm type
 		svg.append('text')
-			.attr("y", 20)
+			.attr("y", 20 + (30 * sameTime))
 			.attr("x", function() {
 				var dist = 250;
 				dist = dist + (5.0 * (alarm.ALARM_TIMES[flag]/longestTime) * 100);
@@ -155,9 +165,10 @@ function barWithFlags(alarm) {
 				return flagText;
 			})
 			.attr("class", "bar-flags");
+
 		// Text for alarm time
 		svg.append('text')
-			.attr("y", 35)
+			.attr("y", 35 + (30 * sameTime))
 			.attr("x", function() {
 				var dist = 250;
 				dist = dist + 6 + (5.0 * (alarm.ALARM_TIMES[flag]/longestTime) * 100);
