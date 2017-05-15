@@ -29,3 +29,11 @@ function FormatDuration(d) {
   }
   return description;
 }
+
+function getHoursMinutes(d) {
+  var time = {minutes: 0, hours: 0};
+  var minutes = Math.floor(d / (60 * 1000));
+  time.hours = Math.floor(minutes / 60);
+  time.minutes = minutes % 60;
+  return time;
+}
