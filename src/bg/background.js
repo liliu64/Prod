@@ -322,7 +322,7 @@ function resetTimers(alarmInfo) {
 chrome.tabs.onUpdated.addListener(HandleUpdate);
 chrome.tabs.onActivated.addListener(HandleActivated);
 chrome.idle.onStateChanged.addListener(HandleIdle);
-chrome.idle.setDetectionInterval(120);
+chrome.idle.setDetectionInterval(300);
 chrome.alarms.onAlarm.addListener(resetTimers);
 chrome.runtime.onInstalled.addListener(function (object) {
    chrome.tabs.create({url: optionsURL}, function (tab) {
